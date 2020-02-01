@@ -1,5 +1,4 @@
-
-enum Interupts {
+pub enum Interupts {
     V_Blank,
     LCDC_Status,
     Timer_overflow,
@@ -7,7 +6,4 @@ enum Interupts {
     High_to_Low_of_P10_P13,
 }
 
-struct CpuState {
-
-}
-
+pub struct Cpu {}

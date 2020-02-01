@@ -4,5 +4,5 @@ mod cpu;
 mod screen;
 
 fn main() {
-    println!("Hello, world!");
+    bus::println!("Hello, world!");
 }

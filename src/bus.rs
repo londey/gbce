@@ -4,10 +4,8 @@ struct Ram {
     bytes: Vec<u8>,
 }
 
-
 struct Bus {
     _cpu: crate::cpu::Cpu,
-
 }
 
 mod memory_map {
@@ -18,7 +16,8 @@ mod memory_map {
     const SWITCHABLE_RAM: (BusAddress, BusAddress) = (VIDEO_RAM.1, BusAddress(0x_C000_u16));
     const INTERNAL_RAM_1: (BusAddress, BusAddress) = (SWITCHABLE_RAM.1, BusAddress(0x_E000_u16));
     const INTERNAL_RAM_ECHO: (BusAddress, BusAddress) = (INTERNAL_RAM_1.1, BusAddress(0x_FE00_u16));
-    const SPRITE_ATTRIB_MEMORY: (BusAddress, BusAddress) = (INTERNAL_RAM_ECHO.1, BusAddress(0x_FEA0_u16));
+    const SPRITE_ATTRIB_MEMORY: (BusAddress, BusAddress) =
+        (INTERNAL_RAM_ECHO.1, BusAddress(0x_FEA0_u16));
     const EMPTY_IO_1: (BusAddress, BusAddress) = (SPRITE_ATTRIB_MEMORY.1, BusAddress(0x_FF00_u16));
     const IO_PORTS: (BusAddress, BusAddress) = (EMPTY_IO_1.1, BusAddress(0x_FF4C_u16));
     const EMPTY_IO_2: (BusAddress, BusAddress) = (IO_PORTS.1, BusAddress(0x_FF80_u16));
@@ -42,8 +41,10 @@ mod reserved_locations {
     const SERIAL_TRANSFER_COMPLETION_INTERRUPT: BusAddress = BusAddress(0x_0058_u16);
     const HIGH_TO_LOW_OF_P10_P13_INTERRUPT: BusAddress = BusAddress(0x_0060_u16);
 
-    const EXECUTION_START_POINT: (BusAddress, BusAddress) = (BusAddress(0x_0100_u16), BusAddress(0x_0104_u16));
-    const NINTENDO_GRAPHIC: (BusAddress, BusAddress) = (BusAddress(0x_0104_u16), BusAddress(0x_0134_u16));
+    const EXECUTION_START_POINT: (BusAddress, BusAddress) =
+        (BusAddress(0x_0100_u16), BusAddress(0x_0104_u16));
+    const NINTENDO_GRAPHIC: (BusAddress, BusAddress) =
+        (BusAddress(0x_0104_u16), BusAddress(0x_0134_u16));
     const GAME_TITLE: (BusAddress, BusAddress) = (BusAddress(0x_0134_u16), BusAddress(0x_0143_u16));
     const COLOR_GAMEBOY: BusAddress = BusAddress(0x_0143_u16);
     const LICENSE_CODE_HIGH_NIBBLE: BusAddress = BusAddress(0x_0144_u16);
@@ -57,22 +58,13 @@ mod reserved_locations {
     const MASK_ROM_VERSION_NUMBER: BusAddress = BusAddress(0x_014C_u16);
     const COMPLEMENT_CHECK: BusAddress = BusAddress(0x_014D_u16);
     const CHECKSUM: (BusAddress, BusAddress) = (BusAddress(0x_014E_u16), BusAddress(0x_0150_u16));
-
-
 }
 
-mod io_registers {
-    
-}
-
+mod io_registers {}
 
 impl Bus {
-    fn write8(address: BusAddress, byte: u8) {
-
-    }
+    fn write8(address: BusAddress, byte: u8) {}
 }
-
-
 
 #[cfg(test)]
 mod tests {
