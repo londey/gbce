@@ -1,10 +1,10 @@
-fn load_cart(_rom_data: &[u8]) -> Cart {
+pub fn load_cart(_rom_data: &[u8]) -> Cart {
     Cart {
         rom: Vec::from(_rom_data),
     }
 }
 
-struct Cart {
+pub struct Cart {
     rom: Vec<u8>,
 }
 
