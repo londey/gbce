@@ -7,12 +7,6 @@ pub enum Interupts {
     HighToLowOfP10P13,
 }
 
-pub fn create_cpu() -> Cpu {
-    Cpu {
-        _registers: Default::default(),
-    }
-}
-
 #[derive(Default)]
 struct Registers {
     a: u8,
@@ -25,7 +19,6 @@ struct Registers {
     l: u8,
     sp: u16,
     pc: u16,
-    flags: u8,
 }
 
 enum InstructionDuration {
@@ -36,4 +29,12 @@ enum InstructionDuration {
 
 pub struct Cpu {
     _registers: Registers,
+}
+
+impl Cpu {
+    pub fn new() -> Self {
+        Cpu {
+            _registers: Default::default(),
+        }
+    }
 }

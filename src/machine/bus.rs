@@ -1,35 +1,26 @@
-use std::convert::TryInto;
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub struct BusAddress(pub u16);
 
-#[derive(Copy, Clone)]
-pub struct BusAddress(u16);
-
-pub struct Ram {
-    mapping: (BusAddress, BusAddress),
-    bytes: Vec<u8>,
+enum VRamBank {
+    BANK_0,
+    BANK_1,
 }
 
-fn create_ram((begin, end): (BusAddress, BusAddress)) -> Ram {
-    Ram {
-        mapping: (begin, end),
-        bytes: vec![0; (end.0 - begin.0).try_into().unwrap()],
-    }
-}
-
-pub fn create_machine(cart: crate::cart::Cart) -> Bus {
-    Bus {
-        cart: cart,
-        cpu: crate::cpu::create_cpu(),
-        main_ram: create_ram(memory_map::MAIN_RAM),
-        video_ram: create_ram(memory_map::VIDEO_RAM),
-    }
+enum SystemRamBank {
+    BANK_1,
+    BANK_2,
+    BANK_3,
+    BANK_4,
+    BANK_5,
+    BANK_6,
+    BANK_7,
 }
 
 pub struct Bus {
-    cart: crate::cart::Cart,
-    cpu: crate::cpu::Cpu,
-    main_ram: Ram,
-    video_ram: Ram,
+    vRamBank: VRamBank,
+    systemRamBank: SystemRamBank,
 }
+
 
 #[allow(dead_code)]
 pub mod memory_map {
@@ -40,17 +31,16 @@ pub mod memory_map {
         (ROM_BANK_0.1, BusAddress(0x_8000_u16));
     pub const VIDEO_RAM: (BusAddress, BusAddress) =
         (SWITCHABLE_ROM_BANK.1, BusAddress(0x_A000_u16));
-    pub const SWITCHABLE_RAM: (BusAddress, BusAddress) = (VIDEO_RAM.1, BusAddress(0x_C000_u16));
-    pub const MAIN_RAM: (BusAddress, BusAddress) = (SWITCHABLE_RAM.1, BusAddress(0x_E000_u16));
-    pub const INTERNAL_RAM_ECHO: (BusAddress, BusAddress) = (MAIN_RAM.1, BusAddress(0x_FE00_u16));
+    pub const EXTERNAL_RAM: (BusAddress, BusAddress) = (VIDEO_RAM.1, BusAddress(0x_C000_u16));
+    pub const SYSTEM_RAM: (BusAddress, BusAddress) = (EXTERNAL_RAM.1, BusAddress(0x_E000_u16));
+    pub const PROHIBITED_0: (BusAddress, BusAddress) = (SYSTEM_RAM.1, BusAddress(0x_FE00_u16));
     pub const SPRITE_ATTRIB_MEMORY: (BusAddress, BusAddress) =
-        (INTERNAL_RAM_ECHO.1, BusAddress(0x_FEA0_u16));
-    pub const EMPTY_IO_1: (BusAddress, BusAddress) =
+        (PROHIBITED_0.1, BusAddress(0x_FEA0_u16));
+    pub const PROHIBITED_1: (BusAddress, BusAddress) =
         (SPRITE_ATTRIB_MEMORY.1, BusAddress(0x_FF00_u16));
-    pub const IO_PORTS: (BusAddress, BusAddress) = (EMPTY_IO_1.1, BusAddress(0x_FF4C_u16));
-    pub const EMPTY_IO_2: (BusAddress, BusAddress) = (IO_PORTS.1, BusAddress(0x_FF80_u16));
-    pub const INTERNAL_RAM_2: (BusAddress, BusAddress) = (EMPTY_IO_2.1, BusAddress(0x_FFFF_u16));
-    pub const INTERRUPT_ENABLE_REGISTER: BusAddress = INTERNAL_RAM_2.1;
+    pub const IO_PORTS: (BusAddress, BusAddress) = (PROHIBITED_1.1, BusAddress(0x_FF80_u16));
+    pub const HIGH_RAM: (BusAddress, BusAddress) = (IO_PORTS.1, BusAddress(0x_FFFF_u16));
+    pub const INTERRUPT_ENABLE_REGISTER: BusAddress = HIGH_RAM.1;
 }
 
 #[allow(dead_code)]
@@ -94,7 +84,47 @@ mod reserved_locations {
 mod io_registers {}
 
 impl Bus {
-    fn write8(address: BusAddress, byte: u8) {}
+    pub fn new() -> Bus {
+        Bus{
+            vRamBank: VRamBank::BANK_0,
+            systemRamBank: SystemRamBank::BANK_1,
+        }
+    }
+
+    fn write8(self, machine: &mut super::Machine, address: BusAddress, byte: u8) {
+        use memory_map::*;
+        match address {
+            BusAddress(x) if let (min, max) = ROM_BANK_0 if min..=max => println!("cart0"),
+            SWITCHABLE_ROM_BANK.0..=SWITCHABLE_ROM_BANK.1 => println!("cart1"),
+            VIDEO_RAM.0..=VIDEO_RAM.1 => println!("vram"),
+            EXTERNAL_RAM.0..=EXTERNAL_RAM.1 => println!("externalRam"),
+            SYSTEM_RAM.0..=SYSTEM_RAM.1 => println!("systemRam"),
+            PROHIBITED_0.0..=PROHIBITED_0.1 => println!("prohibited0"),
+            SPRITE_ATTRIB_MEMORY.0..=SPRITE_ATTRIB_MEMORY.1 => println!("oam"),
+            PROHIBITED_1.0..=PROHIBITED_1.1 => println!("systemRam"),
+            IO_PORTS.0..=IO_PORTS.1 => println!("ioPorts"),
+            HIGH_RAM.0..=HIGH_RAM.1 => println!("highRam"),
+            INTERRUPT_ENABLE_REGISTER => println!("interruptEnableRegister"),
+        }
+
+        // match address {
+        //     BusAddress(x) if inside(x, ROM_BANK_0) => println!("cart0"),
+        //     BusAddress(x) if inside(x, SWITCHABLE_ROM_BANK) => println!("cart1"),
+        //     BusAddress(x) if inside(x, VIDEO_RAM) => println!("vram"),
+        //     BusAddress(x) if inside(x, EXTERNAL_RAM) => println!("externalRam"),
+        //     BusAddress(x) if inside(x, SYSTEM_RAM) => println!("systemRam"),
+        //     BusAddress(x) if inside(x, PROHIBITED_0) => println!("prohibited0"),
+        //     BusAddress(x) if inside(x, SPRITE_ATTRIB_MEMORY) => println!("oam"),
+        //     BusAddress(x) if inside(x, PROHIBITED_1) => println!("systemRam"),
+        //     BusAddress(x) if inside(x, IO_PORTS) => println!("ioPorts"),
+        //     BusAddress(x) if inside(x, HIGH_RAM) => println!("highRam"),
+        //     INTERRUPT_ENABLE_REGISTER => println!("interruptEnableRegister"),
+        // }
+    }
+}
+
+fn inside(address: u16, (min, max): (BusAddress, BusAddress)) -> bool {
+    address >= min.0 && address < max.0
 }
 
 #[cfg(test)]
