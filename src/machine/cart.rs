@@ -1,6 +1,12 @@
+
+use super::bus::BusAddress;
+
+
 pub struct Cart {
     rom_data: Vec<u8>,
 }
+
+
 
 impl Cart {
     pub fn new(_rom_data: &[u8]) -> Cart {
@@ -8,6 +14,14 @@ impl Cart {
             rom_data: Vec::from(_rom_data),
         }
     }
+
+    pub fn write(&mut self, address: BusAddress, byte: u8) {
+
+    }
+
+    pub fn read(&mut self, address: BusAddress) -> u8 {
+        self.rom_data[address.0 as usize]
+    }    
 }
 
 #[cfg(test)]
