@@ -1,21 +1,26 @@
+
+
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub struct BusAddress(pub u16);
 
+#[derive(Clone, Copy)]
 enum VRamBank {
-    BANK_0,
-    BANK_1,
+    Bank0,
+    // Bank1,
 }
 
+#[derive(Clone, Copy)]
 enum SystemRamBank {
-    BANK_1,
-    BANK_2,
-    BANK_3,
-    BANK_4,
-    BANK_5,
-    BANK_6,
-    BANK_7,
+    Bank1,
+    // Bank2,
+    // Bank3,
+    // Bank4,
+    // Bank5,
+    // Bank6,
+    // Bank7,
 }
 
+#[derive(Clone)]
 pub struct Bus {
     v_ram_bank: VRamBank,
     system_ram_bank: SystemRamBank,
@@ -86,12 +91,12 @@ mod io_registers {}
 impl Bus {
     pub fn new() -> Bus {
         Bus{
-            v_ram_bank: VRamBank::BANK_0,
-            system_ram_bank: SystemRamBank::BANK_1,
+            v_ram_bank: VRamBank::Bank0,
+            system_ram_bank: SystemRamBank::Bank1,
         }
     }
 
-    pub fn write8(self, machine: &mut super::Machine, address: BusAddress, byte: u8) {
+    pub fn write8(self, machine: &mut super::MachineState, address: BusAddress, byte: u8) {
         use memory_map::*;
         // match address {
         //     BusAddress(x) if let (min, max) = ROM_BANK_0 if min..=max => println!("cart0"),

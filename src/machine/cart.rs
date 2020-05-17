@@ -1,7 +1,7 @@
 
 use super::bus::BusAddress;
 
-
+#[derive(Clone)]
 pub struct Cart {
     rom_data: Vec<u8>,
 }

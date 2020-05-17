@@ -1,6 +1,7 @@
 use super::bus::BusAddress;
 use std::convert::TryInto;
 
+#[derive(Clone)]
 pub struct Ram {
     mapping: (BusAddress, BusAddress),
     bytes: Vec<u8>,
