@@ -27,7 +27,8 @@ struct RegisterFile {
 }
 
 /// 8 bit registers
-enum Reg8 {
+#[derive(Debug, Ord, PartialOrd, Eq, PartialEq)]
+pub enum Reg8 {
     A, F,
     B, C,
     D, E,
@@ -35,7 +36,8 @@ enum Reg8 {
 }
 
 /// 16 bit registers
-enum Reg16 {
+#[derive(Debug, Ord, PartialOrd, Eq, PartialEq)]
+pub enum Reg16 {
     AF,
     BC,
     DE,
