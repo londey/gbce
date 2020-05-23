@@ -44,15 +44,15 @@ impl MachineState {
         panic!("not implemented");
     }
 
-    pub fn step_fackwards(machine: MachineState, step: MachineStep) -> MachineState {
-        panic!("not implemented");
-    }
+    // pub fn step_fackwards(machine: MachineState, step: MachineStep) -> MachineState {
+    //     panic!("not implemented");
+    // }
 
-    fn calculate_mutation(machine: &MachineState) -> MachineMutation {
-        MachineMutation {
+    // fn calculate_mutation(machine: &MachineState) -> MachineMutation {
+    //     MachineMutation {
 
-        }
-    }
+    //     }
+    // }
 
     // fn step_machine(machine: MachineState, mutation: MachineMutation) -> (MachineState, MachineStep) {
     //     panic!("not implemented");

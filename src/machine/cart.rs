@@ -15,7 +15,7 @@ impl Cart {
         }
     }
 
-    pub fn write(&mut self, address: BusAddress, byte: u8) {
+    pub fn write(&mut self, _: BusAddress, _: u8) {
 
     }
 
