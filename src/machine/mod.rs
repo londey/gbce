@@ -19,13 +19,9 @@ pub struct MachineState {
 }
 
 /// A reversible mutation to the machine state
-pub struct MachineStep {
+pub struct MachineStep {}
 
-}
-
-struct MachineMutation {
-
-}
+struct MachineMutation {}
 
 impl MachineState {
     pub fn new(cart: Cart) -> Self {
@@ -39,7 +35,7 @@ impl MachineState {
         }
     }
 
-    /// 
+    ///
     pub fn step_forwards(self) -> MachineStep {
         panic!("not implemented");
     }

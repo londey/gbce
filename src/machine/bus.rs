@@ -1,5 +1,3 @@
-
-
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub struct BusAddress(pub u16);
 
@@ -25,7 +23,6 @@ pub struct Bus {
     v_ram_bank: VRamBank,
     system_ram_bank: SystemRamBank,
 }
-
 
 #[allow(dead_code)]
 pub mod memory_map {
@@ -90,7 +87,7 @@ mod io_registers {}
 
 impl Bus {
     pub fn new() -> Bus {
-        Bus{
+        Bus {
             v_ram_bank: VRamBank::Bank0,
             system_ram_bank: SystemRamBank::Bank1,
         }

@@ -21,5 +21,5 @@ impl Ram {
 
     pub fn read(&mut self, address: BusAddress) -> u8 {
         self.bytes[address.0 as usize]
-    }  
+    }
 }

@@ -1,6 +1,5 @@
-
-mod instruction_set;
 mod decoder;
+mod instruction_set;
 
 use instruction_set::Instruction;
 
@@ -12,7 +11,7 @@ pub enum Interupts {
     HighToLowOfP10P13,
 }
 
-#[derive(Default,Clone)]
+#[derive(Default, Clone)]
 struct RegisterFile {
     a: u8,
     f: u8,
@@ -29,10 +28,14 @@ struct RegisterFile {
 /// 8 bit registers
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq)]
 pub enum Reg8 {
-    A, F,
-    B, C,
-    D, E,
-    H, L,
+    A,
+    F,
+    B,
+    C,
+    D,
+    E,
+    H,
+    L,
 }
 
 /// 16 bit registers
@@ -56,7 +59,7 @@ impl RegisterFile {
             Reg8::D => self.d,
             Reg8::E => self.e,
             Reg8::H => self.h,
-            Reg8::L => self.l, 
+            Reg8::L => self.l,
         }
     }
 
@@ -69,7 +72,7 @@ impl RegisterFile {
             Reg8::D => self.d = value,
             Reg8::E => self.e = value,
             Reg8::H => self.h = value,
-            Reg8::L => self.l = value, 
+            Reg8::L => self.l = value,
         }
     }
 
@@ -86,17 +89,27 @@ impl RegisterFile {
 
     fn set16(&mut self, reg: Reg16, value: u16) {
         match reg {
-            Reg16::AF => {self.a = (value >> 8) as u8; self.f = value as u8;},
-            Reg16::BC => {self.b = (value >> 8) as u8; self.c = value as u8;},
-            Reg16::DE => {self.d = (value >> 8) as u8; self.e = value as u8;},
-            Reg16::HL => {self.h = (value >> 8) as u8; self.l = value as u8;},
+            Reg16::AF => {
+                self.a = (value >> 8) as u8;
+                self.f = value as u8;
+            }
+            Reg16::BC => {
+                self.b = (value >> 8) as u8;
+                self.c = value as u8;
+            }
+            Reg16::DE => {
+                self.d = (value >> 8) as u8;
+                self.e = value as u8;
+            }
+            Reg16::HL => {
+                self.h = (value >> 8) as u8;
+                self.l = value as u8;
+            }
             Reg16::SP => self.sp = value,
             Reg16::PC => self.pc = value,
         }
     }
 }
-
-
 
 #[derive(Clone)]
 pub struct CpuState {
