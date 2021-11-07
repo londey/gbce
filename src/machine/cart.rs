@@ -1,3 +1,6 @@
+use super::bus::BusAddress;
+
+#[derive(Clone)]
 pub struct Cart {
     rom_data: Vec<u8>,
 }
@@ -7,6 +10,12 @@ impl Cart {
         Cart {
             rom_data: Vec::from(_rom_data),
         }
+    }
+
+    pub fn write(&mut self, _: BusAddress, _: u8) {}
+
+    pub fn read(&mut self, address: BusAddress) -> u8 {
+        self.rom_data[address.0 as usize]
     }
 }
 

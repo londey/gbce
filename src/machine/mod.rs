@@ -1,32 +1,56 @@
+pub use cart::Cart;
+
 mod bus;
 mod cart;
 mod cpu;
 mod ram;
 
 use bus::memory_map;
-use bus::Bus;
-pub use cart::Cart;
-use cpu::Cpu;
-use ram::Ram;
 
-pub struct Machine {
+/// The state of the machine at one moment
+#[derive(Clone)]
+pub struct MachineState {
     cart: Cart,
-    cpu: Cpu,
-    system_ram: Ram,
-    video_ram: Ram,
-    high_ram: Ram,
-    bus: Bus,
+    cpu: cpu::CpuState,
+    system_ram: ram::Ram,
+    video_ram: ram::Ram,
+    high_ram: ram::Ram,
+    bus: bus::Bus,
 }
 
-impl Machine {
+/// A reversible mutation to the machine state
+pub struct MachineStep {}
+
+struct MachineMutation {}
+
+impl MachineState {
     pub fn new(cart: Cart) -> Self {
-        Machine {
+        MachineState {
             cart: cart,
-            cpu: Cpu::new(),
-            system_ram: Ram::new(memory_map::SYSTEM_RAM),
-            video_ram: Ram::new(memory_map::VIDEO_RAM),
-            high_ram: Ram::new(memory_map::HIGH_RAM),
-            bus: Bus::new(),
+            cpu: cpu::CpuState::new(),
+            system_ram: ram::Ram::new(memory_map::SYSTEM_RAM),
+            video_ram: ram::Ram::new(memory_map::VIDEO_RAM),
+            high_ram: ram::Ram::new(memory_map::HIGH_RAM),
+            bus: bus::Bus::new(),
         }
     }
+
+    ///
+    pub fn step_forwards(self) -> MachineStep {
+        panic!("not implemented");
+    }
+
+    // pub fn step_fackwards(machine: MachineState, step: MachineStep) -> MachineState {
+    //     panic!("not implemented");
+    // }
+
+    // fn calculate_mutation(machine: &MachineState) -> MachineMutation {
+    //     MachineMutation {
+
+    //     }
+    // }
+
+    // fn step_machine(machine: MachineState, mutation: MachineMutation) -> (MachineState, MachineStep) {
+    //     panic!("not implemented");
+    // }
 }

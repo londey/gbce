@@ -1,26 +1,28 @@
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub struct BusAddress(pub u16);
 
+#[derive(Clone, Copy)]
 enum VRamBank {
-    BANK_0,
-    BANK_1,
+    Bank0,
+    // Bank1,
 }
 
+#[derive(Clone, Copy)]
 enum SystemRamBank {
-    BANK_1,
-    BANK_2,
-    BANK_3,
-    BANK_4,
-    BANK_5,
-    BANK_6,
-    BANK_7,
+    Bank1,
+    // Bank2,
+    // Bank3,
+    // Bank4,
+    // Bank5,
+    // Bank6,
+    // Bank7,
 }
 
+#[derive(Clone)]
 pub struct Bus {
-    vRamBank: VRamBank,
-    systemRamBank: SystemRamBank,
+    v_ram_bank: VRamBank,
+    system_ram_bank: SystemRamBank,
 }
-
 
 #[allow(dead_code)]
 pub mod memory_map {
@@ -85,41 +87,42 @@ mod io_registers {}
 
 impl Bus {
     pub fn new() -> Bus {
-        Bus{
-            vRamBank: VRamBank::BANK_0,
-            systemRamBank: SystemRamBank::BANK_1,
+        Bus {
+            v_ram_bank: VRamBank::Bank0,
+            system_ram_bank: SystemRamBank::Bank1,
         }
     }
 
-    fn write8(self, machine: &mut super::Machine, address: BusAddress, byte: u8) {
+    pub fn write8(self, machine: &mut super::MachineState, address: BusAddress, byte: u8) {
         use memory_map::*;
-        match address {
-            BusAddress(x) if let (min, max) = ROM_BANK_0 if min..=max => println!("cart0"),
-            SWITCHABLE_ROM_BANK.0..=SWITCHABLE_ROM_BANK.1 => println!("cart1"),
-            VIDEO_RAM.0..=VIDEO_RAM.1 => println!("vram"),
-            EXTERNAL_RAM.0..=EXTERNAL_RAM.1 => println!("externalRam"),
-            SYSTEM_RAM.0..=SYSTEM_RAM.1 => println!("systemRam"),
-            PROHIBITED_0.0..=PROHIBITED_0.1 => println!("prohibited0"),
-            SPRITE_ATTRIB_MEMORY.0..=SPRITE_ATTRIB_MEMORY.1 => println!("oam"),
-            PROHIBITED_1.0..=PROHIBITED_1.1 => println!("systemRam"),
-            IO_PORTS.0..=IO_PORTS.1 => println!("ioPorts"),
-            HIGH_RAM.0..=HIGH_RAM.1 => println!("highRam"),
-            INTERRUPT_ENABLE_REGISTER => println!("interruptEnableRegister"),
-        }
-
         // match address {
-        //     BusAddress(x) if inside(x, ROM_BANK_0) => println!("cart0"),
-        //     BusAddress(x) if inside(x, SWITCHABLE_ROM_BANK) => println!("cart1"),
-        //     BusAddress(x) if inside(x, VIDEO_RAM) => println!("vram"),
-        //     BusAddress(x) if inside(x, EXTERNAL_RAM) => println!("externalRam"),
-        //     BusAddress(x) if inside(x, SYSTEM_RAM) => println!("systemRam"),
-        //     BusAddress(x) if inside(x, PROHIBITED_0) => println!("prohibited0"),
-        //     BusAddress(x) if inside(x, SPRITE_ATTRIB_MEMORY) => println!("oam"),
-        //     BusAddress(x) if inside(x, PROHIBITED_1) => println!("systemRam"),
-        //     BusAddress(x) if inside(x, IO_PORTS) => println!("ioPorts"),
-        //     BusAddress(x) if inside(x, HIGH_RAM) => println!("highRam"),
+        //     BusAddress(x) if let (min, max) = ROM_BANK_0 if min..=max => println!("cart0"),
+        //     SWITCHABLE_ROM_BANK.0..=SWITCHABLE_ROM_BANK.1 => println!("cart1"),
+        //     VIDEO_RAM.0..=VIDEO_RAM.1 => println!("vram"),
+        //     EXTERNAL_RAM.0..=EXTERNAL_RAM.1 => println!("externalRam"),
+        //     SYSTEM_RAM.0..=SYSTEM_RAM.1 => println!("systemRam"),
+        //     PROHIBITED_0.0..=PROHIBITED_0.1 => println!("prohibited0"),
+        //     SPRITE_ATTRIB_MEMORY.0..=SPRITE_ATTRIB_MEMORY.1 => println!("oam"),
+        //     PROHIBITED_1.0..=PROHIBITED_1.1 => println!("systemRam"),
+        //     IO_PORTS.0..=IO_PORTS.1 => println!("ioPorts"),
+        //     HIGH_RAM.0..=HIGH_RAM.1 => println!("highRam"),
         //     INTERRUPT_ENABLE_REGISTER => println!("interruptEnableRegister"),
         // }
+
+        match address {
+            BusAddress(x) if inside(x, ROM_BANK_0) => machine.cart.write(address, byte),
+            BusAddress(x) if inside(x, SWITCHABLE_ROM_BANK) => machine.cart.write(address, byte),
+            BusAddress(x) if inside(x, VIDEO_RAM) => machine.video_ram.write(address, byte),
+            BusAddress(x) if inside(x, EXTERNAL_RAM) => machine.cart.write(address, byte),
+            BusAddress(x) if inside(x, SYSTEM_RAM) => machine.system_ram.write(address, byte),
+            BusAddress(x) if inside(x, PROHIBITED_0) => panic!("write to prohibited 0"),
+            BusAddress(x) if inside(x, SPRITE_ATTRIB_MEMORY) => println!("oam"),
+            BusAddress(x) if inside(x, PROHIBITED_1) => panic!("write to prohibited 1"),
+            BusAddress(x) if inside(x, IO_PORTS) => println!("ioPorts"),
+            BusAddress(x) if inside(x, HIGH_RAM) => machine.high_ram.write(address, byte),
+            INTERRUPT_ENABLE_REGISTER => println!("interruptEnableRegister"),
+            _ => panic!("should not get here"),
+        }
     }
 }
 
