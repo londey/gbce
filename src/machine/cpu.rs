@@ -1,7 +1,7 @@
 mod decoder;
 mod instruction_set;
 
-use instruction_set::Command;
+pub use instruction_set::Instruction;
 
 pub enum Interupts {
     VBlank,
