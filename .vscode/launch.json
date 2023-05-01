@@ -1,0 +1,20 @@
+// F5 runs cargo run without a debugger
+// Ctrl+F5 runs cargo run with a debugger
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "cargo run",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/target/debug/gbce.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false
+            // clear console on launch
+            
+        }
+    ]
+}
