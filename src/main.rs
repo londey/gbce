@@ -33,7 +33,7 @@ const SCREEN_WIDTH: u32 = 640;
 const SCREEN_HEIGHT: u32 = 480;
 const FPS: u64 = 60;
 const DIAGNOSTICS_WINDOW_WIDTH: u32 = 300;
-const DIAGNOSTICS_WINDOW_HEIGHT: u32 = 200;
+const DIAGNOSTICS_WINDOW_HEIGHT: u32 = SCREEN_HEIGHT;
 
 struct MonoSound {
     samples: Vec<u8>,
@@ -69,7 +69,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             DIAGNOSTICS_WINDOW_WIDTH,
             DIAGNOSTICS_WINDOW_HEIGHT,
         )
-        .position_centered()
+        .position(window.position().0 + SCREEN_WIDTH as i32, window.position().1)
         .build()
         .expect("Failed to create diagnostics window");
 
@@ -128,11 +128,33 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
 
+        let mut color: (u8, u8, u8) = (127, 127, 127); 
+
         if let Some(ref controller) = controller {
             // Read input from the Xbox controller here
             // Example: press the 'A' button to quit the emulator
             if controller.button(sdl2::controller::Button::Back) {
                 break 'running;
+            }
+
+            if controller.button(sdl2::controller::Button::A)
+            {
+                color = (64, 255, 64);
+            }
+
+            if controller.button(sdl2::controller::Button::B)
+            {
+                color = (255, 64, 64);
+            }
+
+            if controller.button(sdl2::controller::Button::X)
+            {
+                color = (64, 64, 255);
+            }
+
+            if controller.button(sdl2::controller::Button::Y)
+            {
+                color = (255, 255, 64);
             }
         }
 
@@ -144,9 +166,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 for y in 0..SCREEN_HEIGHT as usize {
                     for x in 0..SCREEN_WIDTH as usize {
                         let offset = y * pitch + x * 3;
-                        buffer[offset] = 255;
-                        buffer[offset + 1] = 0;
-                        buffer[offset + 2] = 0;
+                        buffer[offset] = color.0;
+                        buffer[offset + 1] = color.1;
+                        buffer[offset + 2] = color.2;
                     }
                 }
             })
