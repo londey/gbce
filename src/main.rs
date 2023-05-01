@@ -53,7 +53,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let sdl_context = sdl2::init().expect("Failed to initialize SDL");
     let video_subsystem = sdl_context.video().expect("Failed to get video subsystem");
     let audio_subsystem = sdl_context.audio().expect("Failed to get audio subsystem");
-    let controller_subsystem = sdl_context.game_controller().expect("Failed to get controller subsystem");
+    let controller_subsystem = sdl_context
+        .game_controller()
+        .expect("Failed to get controller subsystem");
 
     let window = video_subsystem
         .window("Game Emulator", SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -94,9 +96,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     device.resume();
 
     // Process input from the Xbox controller and keyboard
-    let mut controller : Option<sdl2::controller::GameController>   = None;
+    let mut controller: Option<sdl2::controller::GameController> = None;
 
-    let mut event_pump = sdl_context.event_pump().expect("Failed to get SDL event pump");
+    let mut event_pump = sdl_context
+        .event_pump()
+        .expect("Failed to get SDL event pump");
 
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -119,7 +123,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                 }
-
 
                 _ => {}
             }
@@ -147,16 +150,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                 }
             })
-            .unwrap();
+            .expect("Failed to lock renderer texture");
 
-        canvas.copy(&texture, None, None).unwrap();
+        canvas
+            .copy(&texture, None, None)
+            .expect("Failed to copy texture to canvas");
         canvas.present();
 
         // Sleep to maintain the desired frame rate
         let frame_duration = Duration::from_millis(1000 / FPS);
         std::thread::sleep(frame_duration);
-
-
 
         // for event in event_pump.poll_iter() {
         //     match event {
