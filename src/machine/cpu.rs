@@ -11,6 +11,16 @@ pub enum Interupts {
     HighToLowOfP10P13,
 }
 
+/// This struct represents the state of the CPU registers
+/// 
+/// | 15..8 |  7..0 |
+/// | ----- | ----- |
+/// |   A   |   F   |
+/// |   B   |   C   |
+/// |   D   |   E   |
+/// |   H   |   L   |
+/// |      SP       |
+/// |      PC       |
 #[derive(Default, Clone)]
 struct RegisterFile {
     a: u8,
@@ -25,7 +35,7 @@ struct RegisterFile {
     pc: u16,
 }
 
-/// 8 bit registers
+/// This enum identifies each of the 8 bit registers
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq)]
 pub enum Reg8 {
     A,
@@ -38,7 +48,7 @@ pub enum Reg8 {
     L,
 }
 
-/// 16 bit registers
+/// This enum identifies all of the 16 bit registers
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq)]
 pub enum Reg16 {
     AF,

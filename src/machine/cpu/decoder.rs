@@ -157,7 +157,117 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         // sec 3.3.2.2
         [0xF9, ..] => DI{ins: LDMove16 {dest: SP, src: HL}, cycles: 8, advance: 1, flags: None},
 
+        // sec 3.3.2.3
+        // N/A
 
+        // sec 3.3.2.4
+        [0xF8, x, ..] => DI{ins: LDHLSP {offset: *x as i8}, cycles: 12, advance: 2, flags: None},
+
+        // sec 3.3.2.5
+        [0x08, l, h, ..] => DI{ins: LDStoreSP {addr: im16(h, l)}, cycles: 20, advance: 3, flags: None},
+
+        // sec 3.3.2.6
+        [0xF5, ..] => DI{ins: PUSH {src: AF}, cycles: 16, advance: 1, flags: None},
+        [0xC5, ..] => DI{ins: PUSH {src: BC}, cycles: 16, advance: 1, flags: None},
+        [0xD5, ..] => DI{ins: PUSH {src: DE}, cycles: 16, advance: 1, flags: None},
+        [0xE5, ..] => DI{ins: PUSH {src: HL}, cycles: 16, advance: 1, flags: None},
+
+        // sec 3.3.2.7
+        [0xF1, ..] => DI{ins: POP {dest: AF}, cycles: 12, advance: 1, flags: None},
+        [0xC1, ..] => DI{ins: POP {dest: BC}, cycles: 12, advance: 1, flags: None},
+        [0xD1, ..] => DI{ins: POP {dest: DE}, cycles: 12, advance: 1, flags: None},
+        [0xE1, ..] => DI{ins: POP {dest: HL}, cycles: 12, advance: 1, flags: None},
+
+        // sec 3.3.3.1
+        [0x87, ..] => DI{ins: ADD8ToAccumulator {src: A}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x80, ..] => DI{ins: ADD8ToAccumulator {src: B}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x81, ..] => DI{ins: ADD8ToAccumulator {src: C}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x82, ..] => DI{ins: ADD8ToAccumulator {src: D}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x83, ..] => DI{ins: ADD8ToAccumulator {src: E}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x84, ..] => DI{ins: ADD8ToAccumulator {src: H}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x85, ..] => DI{ins: ADD8ToAccumulator {src: L}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x86, ..] => DI{ins: ADD8AtHLToAccumulator {}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0xC6, x, ..] => DI{ins: ADD8Immediate { value: *x }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z | Flags::HC)},
+
+        // sec 3.3.3.2
+        [0x8F, ..] => DI{ins: ADC8ToAccumulator {src: A}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x88, ..] => DI{ins: ADC8ToAccumulator {src: B}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x89, ..] => DI{ins: ADC8ToAccumulator {src: C}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x8A, ..] => DI{ins: ADC8ToAccumulator {src: D}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x8B, ..] => DI{ins: ADC8ToAccumulator {src: E}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x8C, ..] => DI{ins: ADC8ToAccumulator {src: H}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x8D, ..] => DI{ins: ADC8ToAccumulator {src: L}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x8E, ..] => DI{ins: ADC8AtHLToAccumulator {}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0xCE, x, ..] => DI{ins: ADC8Immediate { value: *x }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z | Flags::HC)},
+
+        // sec 3.3.3.3
+        [0x97, ..] => DI{ins: SUB8ToAccumulator {src: A}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0x90, ..] => DI{ins: SUB8ToAccumulator {src: B}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0x91, ..] => DI{ins: SUB8ToAccumulator {src: C}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0x92, ..] => DI{ins: SUB8ToAccumulator {src: D}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0x93, ..] => DI{ins: SUB8ToAccumulator {src: E}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0x94, ..] => DI{ins: SUB8ToAccumulator {src: H}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0x95, ..] => DI{ins: SUB8ToAccumulator {src: L}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0x96, ..] => DI{ins: SUB8AtHLToAccumulator {}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0xD6, x, ..] => DI{ins: SUB8Immediate { value: *x }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+
+        // sec 3.3.3.4
+        [0x9F, ..] => DI{ins: SBC8ToAccumulator {src: A}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0x98, ..] => DI{ins: SBC8ToAccumulator {src: B}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0x99, ..] => DI{ins: SBC8ToAccumulator {src: C}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0x9A, ..] => DI{ins: SBC8ToAccumulator {src: D}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0x9B, ..] => DI{ins: SBC8ToAccumulator {src: E}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0x9C, ..] => DI{ins: SBC8ToAccumulator {src: H}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0x9D, ..] => DI{ins: SBC8ToAccumulator {src: L}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0x9E, ..] => DI{ins: SBC8AtHLToAccumulator {}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+        [0xDE, x, ..] => DI{ins: SBC8Immediate { value: *x }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
+
+        // sec 3.3.3.5
+        [0xA7, ..] => DI{ins: AND8ToAccumulator {src: A}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0xA0, ..] => DI{ins: AND8ToAccumulator {src: B}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0xA1, ..] => DI{ins: AND8ToAccumulator {src: C}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0xA2, ..] => DI{ins: AND8ToAccumulator {src: D}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0xA3, ..] => DI{ins: AND8ToAccumulator {src: E}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0xA4, ..] => DI{ins: AND8ToAccumulator {src: H}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0xA5, ..] => DI{ins: AND8ToAccumulator {src: L}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0xA6, ..] => DI{ins: AND8AtHLToAccumulator {}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0xE6, x, ..] => DI{ins: AND8Immediate { value: *x }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z | Flags::HC)},
+
+        // sec 3.3.3.6
+        [0xB7, ..] => DI{ins: OR8ToAccumulator {src: A}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xB0, ..] => DI{ins: OR8ToAccumulator {src: B}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xB1, ..] => DI{ins: OR8ToAccumulator {src: C}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xB2, ..] => DI{ins: OR8ToAccumulator {src: D}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xB3, ..] => DI{ins: OR8ToAccumulator {src: E}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xB4, ..] => DI{ins: OR8ToAccumulator {src: H}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xB5, ..] => DI{ins: OR8ToAccumulator {src: L}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xB6, ..] => DI{ins: OR8AtHLToAccumulator {}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xF6, x, ..] => DI{ins: OR8Immediate { value: *x }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+
+        // sec 3.3.3.7
+        [0xAF, ..] => DI{ins: XOR8ToAccumulator {src: A}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xA8, ..] => DI{ins: XOR8ToAccumulator {src: B}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xA9, ..] => DI{ins: XOR8ToAccumulator {src: C}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xAA, ..] => DI{ins: XOR8ToAccumulator {src: D}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xAB, ..] => DI{ins: XOR8ToAccumulator {src: E}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xAC, ..] => DI{ins: XOR8ToAccumulator {src: H}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xAD, ..] => DI{ins: XOR8ToAccumulator {src: L}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xAE, ..] => DI{ins: XOR8AtHLToAccumulator {}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z)},
+        [0xEE, x, ..] => DI{ins: XOR8Immediate { value: *x }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+
+        // sec 3.3.3.8
+        [0xBF, ..] => DI{ins: CP8ToAccumulator {src: A}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::C)},
+        [0xB8, ..] => DI{ins: CP8ToAccumulator {src: B}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::C)},
+        [0xB9, ..] => DI{ins: CP8ToAccumulator {src: C}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::C)},
+        [0xBA, ..] => DI{ins: CP8ToAccumulator {src: D}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::C)},
+        [0xBB, ..] => DI{ins: CP8ToAccumulator {src: E}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::C)},
+        [0xBC, ..] => DI{ins: CP8ToAccumulator {src: H}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::C)},
+        [0xBD, ..] => DI{ins: CP8ToAccumulator {src: L}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::C)},
+        [0xBE, ..] => DI{ins: CP8AtHLToAccumulator {}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::C)},
+        [0xFE, x, ..] => DI{ins: CP8Immediate { value: *x }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z | Flags::HC | Flags::C)},
+
+
+        
 
         _ => panic!("unimplemented instruction")
     }
