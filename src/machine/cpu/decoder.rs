@@ -1,5 +1,10 @@
 use super::Reg16;
 use super::Reg8;
+use super::Operand;
+use super::Flags;
+use super::Flags::*;
+
+
 
 // #[derive(Debug, Ord, PartialOrd, Eq, PartialEq)]
 // pub struct Cycles(u8);
@@ -9,6 +14,8 @@ use super::Reg8;
 
 use super::Instruction;
 use super::Instruction::*;
+
+use super::Operand::*;
 
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq)]
 pub struct DecodedInstruction {
@@ -33,96 +40,96 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
 
     match instruction_stream {
         // sec 3.3.1.1
-        [0x06, x, ..] => DI{ins: LD8Immediate{dest: B, value: *x}, cycles: 8, advance: 2, flags: None},
-        [0x0E, x, ..] => DI{ins: LD8Immediate{dest: C, value: *x}, cycles: 8, advance: 2, flags: None},
-        [0x16, x, ..] => DI{ins: LD8Immediate{dest: D, value: *x}, cycles: 8, advance: 2, flags: None},
-        [0x1E, x, ..] => DI{ins: LD8Immediate{dest: E, value: *x}, cycles: 8, advance: 2, flags: None},
-        [0x26, x, ..] => DI{ins: LD8Immediate{dest: H, value: *x}, cycles: 8, advance: 2, flags: None},
-        [0x2E, x, ..] => DI{ins: LD8Immediate{dest: L, value: *x}, cycles: 8, advance: 2, flags: None},
+        [0x06, x, ..] => DI{ins: LD{dest: R8(B), src: Immediate8(*x)}, cycles: 8, advance: 2, flags: None},
+        [0x0E, x, ..] => DI{ins: LD{dest: R8(C), src: Immediate8(*x)}, cycles: 8, advance: 2, flags: None},
+        [0x16, x, ..] => DI{ins: LD{dest: R8(D), src: Immediate8(*x)}, cycles: 8, advance: 2, flags: None},
+        [0x1E, x, ..] => DI{ins: LD{dest: R8(E), src: Immediate8(*x)}, cycles: 8, advance: 2, flags: None},
+        [0x26, x, ..] => DI{ins: LD{dest: R8(H), src: Immediate8(*x)}, cycles: 8, advance: 2, flags: None},
+        [0x2E, x, ..] => DI{ins: LD{dest: R8(L), src: Immediate8(*x)}, cycles: 8, advance: 2, flags: None},
 
         // sec 3.3.1.2
-        [0x7F, ..] => DI{ins: LDMove8{dest: A, src: A}, cycles: 4, advance: 1, flags: None},
-        [0x78, ..] => DI{ins: LDMove8{dest: A, src: B}, cycles: 4, advance: 1, flags: None},
-        [0x79, ..] => DI{ins: LDMove8{dest: A, src: C}, cycles: 4, advance: 1, flags: None},
-        [0x7A, ..] => DI{ins: LDMove8{dest: A, src: D}, cycles: 4, advance: 1, flags: None},
-        [0x7B, ..] => DI{ins: LDMove8{dest: A, src: E}, cycles: 4, advance: 1, flags: None},
-        [0x7C, ..] => DI{ins: LDMove8{dest: A, src: H}, cycles: 4, advance: 1, flags: None},
-        [0x7D, ..] => DI{ins: LDMove8{dest: A, src: L}, cycles: 4, advance: 1, flags: None},
-        [0x7E, ..] => DI{ins: LDLoad8{dest: A, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x7F, ..] => DI{ins: LD{dest: R8(A), src: R8(A)}, cycles: 4, advance: 1, flags: None},
+        [0x78, ..] => DI{ins: LD{dest: R8(A), src: R8(B)}, cycles: 4, advance: 1, flags: None},
+        [0x79, ..] => DI{ins: LD{dest: R8(A), src: R8(C)}, cycles: 4, advance: 1, flags: None},
+        [0x7A, ..] => DI{ins: LD{dest: R8(A), src: R8(D)}, cycles: 4, advance: 1, flags: None},
+        [0x7B, ..] => DI{ins: LD{dest: R8(A), src: R8(E)}, cycles: 4, advance: 1, flags: None},
+        [0x7C, ..] => DI{ins: LD{dest: R8(A), src: R8(H)}, cycles: 4, advance: 1, flags: None},
+        [0x7D, ..] => DI{ins: LD{dest: R8(A), src: R8(L)}, cycles: 4, advance: 1, flags: None},
+        [0x7E, ..] => DI{ins: LD{dest: R8(A), src: Indirect8(HL)}, cycles: 8, advance: 1, flags: None},
 
-        [0x40, ..] => DI{ins: LDMove8{dest: B, src: B}, cycles: 4, advance: 1, flags: None},
-        [0x41, ..] => DI{ins: LDMove8{dest: B, src: C}, cycles: 4, advance: 1, flags: None},
-        [0x42, ..] => DI{ins: LDMove8{dest: B, src: D}, cycles: 4, advance: 1, flags: None},
-        [0x43, ..] => DI{ins: LDMove8{dest: B, src: E}, cycles: 4, advance: 1, flags: None},
-        [0x44, ..] => DI{ins: LDMove8{dest: B, src: H}, cycles: 4, advance: 1, flags: None},
-        [0x45, ..] => DI{ins: LDMove8{dest: B, src: L}, cycles: 4, advance: 1, flags: None},
-        [0x46, ..] => DI{ins: LDLoad8{dest: B, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x40, ..] => DI{ins: LD{dest: R8(B), src: R8(B)}, cycles: 4, advance: 1, flags: None},
+        [0x41, ..] => DI{ins: LD{dest: R8(B), src: R8(C)}, cycles: 4, advance: 1, flags: None},
+        [0x42, ..] => DI{ins: LD{dest: R8(B), src: R8(D)}, cycles: 4, advance: 1, flags: None},
+        [0x43, ..] => DI{ins: LD{dest: R8(B), src: R8(E)}, cycles: 4, advance: 1, flags: None},
+        [0x44, ..] => DI{ins: LD{dest: R8(B), src: R8(H)}, cycles: 4, advance: 1, flags: None},
+        [0x45, ..] => DI{ins: LD{dest: R8(B), src: R8(L)}, cycles: 4, advance: 1, flags: None},
+        [0x46, ..] => DI{ins: LD{dest: R8(B), src: Indirect8(HL)}, cycles: 8, advance: 1, flags: None},
 
-        [0x48, ..] => DI{ins: LDMove8{dest: C, src: B}, cycles: 4, advance: 1, flags: None},
-        [0x49, ..] => DI{ins: LDMove8{dest: C, src: C}, cycles: 4, advance: 1, flags: None},
-        [0x4A, ..] => DI{ins: LDMove8{dest: C, src: D}, cycles: 4, advance: 1, flags: None},
-        [0x4B, ..] => DI{ins: LDMove8{dest: C, src: E}, cycles: 4, advance: 1, flags: None},
-        [0x4C, ..] => DI{ins: LDMove8{dest: C, src: H}, cycles: 4, advance: 1, flags: None},
-        [0x4D, ..] => DI{ins: LDMove8{dest: C, src: L}, cycles: 4, advance: 1, flags: None},
-        [0x4E, ..] => DI{ins: LDLoad8{dest: C, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x48, ..] => DI{ins: LD{dest: R8(C), src: R8(B)}, cycles: 4, advance: 1, flags: None},
+        [0x49, ..] => DI{ins: LD{dest: R8(C), src: R8(C)}, cycles: 4, advance: 1, flags: None},
+        [0x4A, ..] => DI{ins: LD{dest: R8(C), src: R8(D)}, cycles: 4, advance: 1, flags: None},
+        [0x4B, ..] => DI{ins: LD{dest: R8(C), src: R8(E)}, cycles: 4, advance: 1, flags: None},
+        [0x4C, ..] => DI{ins: LD{dest: R8(C), src: R8(H)}, cycles: 4, advance: 1, flags: None},
+        [0x4D, ..] => DI{ins: LD{dest: R8(C), src: R8(L)}, cycles: 4, advance: 1, flags: None},
+        [0x4E, ..] => DI{ins: LD{dest: R8(C), src: Indirect8(HL)}, cycles: 8, advance: 1, flags: None},
 
-        [0x50, ..] => DI{ins: LDMove8{dest: D, src: B}, cycles: 4, advance: 1, flags: None},
-        [0x51, ..] => DI{ins: LDMove8{dest: D, src: C}, cycles: 4, advance: 1, flags: None},
-        [0x52, ..] => DI{ins: LDMove8{dest: D, src: D}, cycles: 4, advance: 1, flags: None},
-        [0x53, ..] => DI{ins: LDMove8{dest: D, src: E}, cycles: 4, advance: 1, flags: None},
-        [0x54, ..] => DI{ins: LDMove8{dest: D, src: H}, cycles: 4, advance: 1, flags: None},
-        [0x55, ..] => DI{ins: LDMove8{dest: D, src: L}, cycles: 4, advance: 1, flags: None},
-        [0x56, ..] => DI{ins: LDLoad8{dest: D, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x50, ..] => DI{ins: LD{dest: R8(D), src: R8(B)}, cycles: 4, advance: 1, flags: None},
+        [0x51, ..] => DI{ins: LD{dest: R8(D), src: R8(C)}, cycles: 4, advance: 1, flags: None},
+        [0x52, ..] => DI{ins: LD{dest: R8(D), src: R8(D)}, cycles: 4, advance: 1, flags: None},
+        [0x53, ..] => DI{ins: LD{dest: R8(D), src: R8(E)}, cycles: 4, advance: 1, flags: None},
+        [0x54, ..] => DI{ins: LD{dest: R8(D), src: R8(H)}, cycles: 4, advance: 1, flags: None},
+        [0x55, ..] => DI{ins: LD{dest: R8(D), src: R8(L)}, cycles: 4, advance: 1, flags: None},
+        [0x56, ..] => DI{ins: LD{dest: R8(D), src: Indirect8(HL)}, cycles: 8, advance: 1, flags: None},
 
-        [0x58, ..] => DI{ins: LDMove8{dest: E, src: B}, cycles: 4, advance: 1, flags: None},
-        [0x59, ..] => DI{ins: LDMove8{dest: E, src: C}, cycles: 4, advance: 1, flags: None},
-        [0x5A, ..] => DI{ins: LDMove8{dest: E, src: D}, cycles: 4, advance: 1, flags: None},
-        [0x5B, ..] => DI{ins: LDMove8{dest: E, src: E}, cycles: 4, advance: 1, flags: None},
-        [0x5C, ..] => DI{ins: LDMove8{dest: E, src: H}, cycles: 4, advance: 1, flags: None},
-        [0x5D, ..] => DI{ins: LDMove8{dest: E, src: L}, cycles: 4, advance: 1, flags: None},
-        [0x5E, ..] => DI{ins: LDLoad8{dest: E, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x58, ..] => DI{ins: LD{dest: R8(E), src: R8(B)}, cycles: 4, advance: 1, flags: None},
+        [0x59, ..] => DI{ins: LD{dest: R8(E), src: R8(C)}, cycles: 4, advance: 1, flags: None},
+        [0x5A, ..] => DI{ins: LD{dest: R8(E), src: R8(D)}, cycles: 4, advance: 1, flags: None},
+        [0x5B, ..] => DI{ins: LD{dest: R8(E), src: R8(E)}, cycles: 4, advance: 1, flags: None},
+        [0x5C, ..] => DI{ins: LD{dest: R8(E), src: R8(H)}, cycles: 4, advance: 1, flags: None},
+        [0x5D, ..] => DI{ins: LD{dest: R8(E), src: R8(L)}, cycles: 4, advance: 1, flags: None},
+        [0x5E, ..] => DI{ins: LD{dest: R8(E), src: Indirect8(HL)}, cycles: 8, advance: 1, flags: None},
 
-        [0x60, ..] => DI{ins: LDMove8{dest: H, src: B}, cycles: 4, advance: 1, flags: None},
-        [0x61, ..] => DI{ins: LDMove8{dest: H, src: C}, cycles: 4, advance: 1, flags: None},
-        [0x62, ..] => DI{ins: LDMove8{dest: H, src: D}, cycles: 4, advance: 1, flags: None},
-        [0x63, ..] => DI{ins: LDMove8{dest: H, src: E}, cycles: 4, advance: 1, flags: None},
-        [0x64, ..] => DI{ins: LDMove8{dest: H, src: H}, cycles: 4, advance: 1, flags: None},
-        [0x65, ..] => DI{ins: LDMove8{dest: H, src: L}, cycles: 4, advance: 1, flags: None},
-        [0x66, ..] => DI{ins: LDLoad8{dest: H, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x60, ..] => DI{ins: LD{dest: R8(H), src: R8(B)}, cycles: 4, advance: 1, flags: None},
+        [0x61, ..] => DI{ins: LD{dest: R8(H), src: R8(C)}, cycles: 4, advance: 1, flags: None},
+        [0x62, ..] => DI{ins: LD{dest: R8(H), src: R8(D)}, cycles: 4, advance: 1, flags: None},
+        [0x63, ..] => DI{ins: LD{dest: R8(H), src: R8(E)}, cycles: 4, advance: 1, flags: None},
+        [0x64, ..] => DI{ins: LD{dest: R8(H), src: R8(H)}, cycles: 4, advance: 1, flags: None},
+        [0x65, ..] => DI{ins: LD{dest: R8(H), src: R8(L)}, cycles: 4, advance: 1, flags: None},
+        [0x66, ..] => DI{ins: LD{dest: R8(H), src: Indirect8(HL)}, cycles: 8, advance: 1, flags: None},
 
-        [0x68, ..] => DI{ins: LDMove8{dest: L, src: B}, cycles: 4, advance: 1, flags: None},
-        [0x69, ..] => DI{ins: LDMove8{dest: L, src: C}, cycles: 4, advance: 1, flags: None},
-        [0x6A, ..] => DI{ins: LDMove8{dest: L, src: D}, cycles: 4, advance: 1, flags: None},
-        [0x6B, ..] => DI{ins: LDMove8{dest: L, src: E}, cycles: 4, advance: 1, flags: None},
-        [0x6C, ..] => DI{ins: LDMove8{dest: L, src: H}, cycles: 4, advance: 1, flags: None},
-        [0x6D, ..] => DI{ins: LDMove8{dest: L, src: L}, cycles: 4, advance: 1, flags: None},
-        [0x6E, ..] => DI{ins: LDLoad8{dest: L, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x68, ..] => DI{ins: LD{dest: R8(L), src: R8(B)}, cycles: 4, advance: 1, flags: None},
+        [0x69, ..] => DI{ins: LD{dest: R8(L), src: R8(C)}, cycles: 4, advance: 1, flags: None},
+        [0x6A, ..] => DI{ins: LD{dest: R8(L), src: R8(D)}, cycles: 4, advance: 1, flags: None},
+        [0x6B, ..] => DI{ins: LD{dest: R8(L), src: R8(E)}, cycles: 4, advance: 1, flags: None},
+        [0x6C, ..] => DI{ins: LD{dest: R8(L), src: R8(H)}, cycles: 4, advance: 1, flags: None},
+        [0x6D, ..] => DI{ins: LD{dest: R8(L), src: R8(L)}, cycles: 4, advance: 1, flags: None},
+        [0x6E, ..] => DI{ins: LD{dest: R8(L), src: Indirect8(HL)}, cycles: 8, advance: 1, flags: None},
 
-        [0x70, ..] => DI{ins: LDStore8{src: B, addr: HL}, cycles: 8, advance: 1, flags: None},
-        [0x71, ..] => DI{ins: LDStore8{src: C, addr: HL}, cycles: 8, advance: 1, flags: None},
-        [0x72, ..] => DI{ins: LDStore8{src: D, addr: HL}, cycles: 8, advance: 1, flags: None},
-        [0x73, ..] => DI{ins: LDStore8{src: E, addr: HL}, cycles: 8, advance: 1, flags: None},
-        [0x74, ..] => DI{ins: LDStore8{src: H, addr: HL}, cycles: 8, advance: 1, flags: None},
-        [0x75, ..] => DI{ins: LDStore8{src: L, addr: HL}, cycles: 8, advance: 1, flags: None},
-        [0x76, x, ..] => DI{ins: LDStoreImmediateHL{value: *x}, cycles: 12, advance: 2, flags: None},
+        [0x70, ..] => DI{ins: LD{src: R8(B), dest: Indirect8(HL)}, cycles: 8, advance: 1, flags: None},
+        [0x71, ..] => DI{ins: LD{src: R8(C), dest: Indirect8(HL)}, cycles: 8, advance: 1, flags: None},
+        [0x72, ..] => DI{ins: LD{src: R8(D), dest: Indirect8(HL)}, cycles: 8, advance: 1, flags: None},
+        [0x73, ..] => DI{ins: LD{src: R8(E), dest: Indirect8(HL)}, cycles: 8, advance: 1, flags: None},
+        [0x74, ..] => DI{ins: LD{src: R8(H), dest: Indirect8(HL)}, cycles: 8, advance: 1, flags: None},
+        [0x75, ..] => DI{ins: LD{src: R8(L), dest: Indirect8(HL)}, cycles: 8, advance: 1, flags: None},
+        [0x36, x, ..] => DI{ins: LD{dest: R16(HL), src: Immediate8(*x)}, cycles: 12, advance: 2, flags: None},
 
         // sec 3.3.1.3
         // ignoring commands repeated from sec 3.3.1.2
-        [0x0A, ..] => DI{ins: LDLoad8{dest: A, addr: BC}, cycles: 8, advance: 1, flags: None},
-        [0x1A, ..] => DI{ins: LDLoad8{dest: A, addr: DE}, cycles: 8, advance: 1, flags: None},
-        [0xFA, l, h, ..] => DI{ins: LDLoad8ImmediateAddr{dest: A, addr: im16(h, l)}, cycles: 16, advance: 3, flags: None},
-        [0x3E, x, ..] => DI{ins: LD8Immediate{dest: A, value: *x}, cycles: 8, advance: 2, flags: None},
+        [0x0A, ..] => DI{ins: LD{dest: R8(A), src: Indirect8(BC)}, cycles: 8, advance: 1, flags: None},
+        [0x1A, ..] => DI{ins: LD{dest: R8(A), src: Indirect8(DE)}, cycles: 8, advance: 1, flags: None},
+        [0xFA, l, h, ..] => DI{dest: R8(A), src: IndirectImmediate8(im16(h, l)) }, cycles: 16, advance: 3, flags: None},
+        [0x3E, x, ..] => DI{ins: LD{dest: R8(A), src: Immediate8(*x)}, cycles: 8, advance: 2, flags: None},
 
         // sec 3.3.1.4
-        [0x47, ..] => DI{ins: LDMove8{dest: B, src: A}, cycles: 4, advance: 1, flags: None},
-        [0x4F, ..] => DI{ins: LDMove8{dest: C, src: A}, cycles: 4, advance: 1, flags: None},
-        [0x57, ..] => DI{ins: LDMove8{dest: D, src: A}, cycles: 4, advance: 1, flags: None},
-        [0x5F, ..] => DI{ins: LDMove8{dest: E, src: A}, cycles: 4, advance: 1, flags: None},
-        [0x67, ..] => DI{ins: LDMove8{dest: H, src: A}, cycles: 4, advance: 1, flags: None},
-        [0x6F, ..] => DI{ins: LDMove8{dest: L, src: A}, cycles: 4, advance: 1, flags: None},
-        [0x02, ..] => DI{ins: LDStore8{src: A, addr: BC}, cycles: 8, advance: 1, flags: None},
-        [0x12, ..] => DI{ins: LDStore8{src: A, addr: DE}, cycles: 8, advance: 1, flags: None},
-        [0xEA, l, h, ..] => DI{ins: LDStore8ImmediateAddr{addr: im16(h, l), src: A}, cycles: 16, advance: 3, flags: None},
+        [0x47, ..] => DI{ins: LD{dest: R8(B), src: R8(A)}, cycles: 4, advance: 1, flags: None},
+        [0x4F, ..] => DI{ins: LD{dest: R8(C), src: R8(A)}, cycles: 4, advance: 1, flags: None},
+        [0x57, ..] => DI{ins: LD{dest: R8(D), src: R8(A)}, cycles: 4, advance: 1, flags: None},
+        [0x5F, ..] => DI{ins: LD{dest: R8(E), src: R8(A)}, cycles: 4, advance: 1, flags: None},
+        [0x67, ..] => DI{ins: LD{dest: R8(H), src: R8(A)}, cycles: 4, advance: 1, flags: None},
+        [0x6F, ..] => DI{ins: LD{dest: R8(L), src: R8(A)}, cycles: 4, advance: 1, flags: None},
+        [0x02, ..] => DI{ins: LD{src: R8(A), dest: Indirect8(BC)}, cycles: 8, advance: 1, flags: None},
+        [0x12, ..] => DI{ins: LD{src: R8(A), dest: Indirect8(DE)}, cycles: 8, advance: 1, flags: None},
+        [0xEA, l, h, ..] => DI{ins: LD{dest: Indirect8(im16(h, l)),  src: R8(A) , src: A}, cycles: 16, advance: 3, flags: None},
 
         // sec 3.3.1.5
         [0xF2, ..] => DI{ins: LDLoadHigh{dest: A, addr: C}, cycles: 8, advance: 1, flags: None},
