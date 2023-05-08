@@ -6,11 +6,11 @@ use super::Reg8;
 pub enum Instruction {
     LD8Immediate { dest: Reg8, value: u8 },
     LDMove8 { dest: Reg8, src: Reg8 },
-    LDLoad { dest: Reg8, addr: Reg16 },
-    LDStore { src: Reg8, addr: Reg16 },
+    LDLoad8 { dest: Reg8, addr: Reg16 },
+    LDStore8 { src: Reg8, addr: Reg16 },
     LDStoreImmediateHL { value: u8 },
-    LDLoadImmediateAddr { dest: Reg8, addr: u16 },
-    LDStoreImmediateAddr { addr: u16, src: Reg8 },
+    LDLoad8ImmediateAddr { dest: Reg8, addr: u16 },
+    LDStore8ImmediateAddr { addr: u16, src: Reg8 },
     LDLoadHigh { dest: Reg8, addr: Reg8 },
     LDStoreHigh { addr: Reg8, src: Reg8 },
     LDDLoadDec { dest: Reg8, addr: Reg16 },
@@ -22,6 +22,9 @@ pub enum Instruction {
     LD16Immediate { dest: Reg16, value: u16 },
     LDMove16 { dest: Reg16, src: Reg16 },
     LDHLSP { offset: i8 },
+
+    LDLoad16ImmediateAddr { dest: Reg16, addr: u16 },
+    LDStore16ImmediateAddr { addr: u16, src: Reg16 },
 
     PUSH{ src: Reg16 },
     POP{ dest: Reg16 },

@@ -48,7 +48,7 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0x7B, ..] => DI{ins: LDMove8{dest: A, src: E}, cycles: 4, advance: 1, flags: None},
         [0x7C, ..] => DI{ins: LDMove8{dest: A, src: H}, cycles: 4, advance: 1, flags: None},
         [0x7D, ..] => DI{ins: LDMove8{dest: A, src: L}, cycles: 4, advance: 1, flags: None},
-        [0x7E, ..] => DI{ins: LDLoad{dest: A, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x7E, ..] => DI{ins: LDLoad8{dest: A, addr: HL}, cycles: 8, advance: 1, flags: None},
 
         [0x40, ..] => DI{ins: LDMove8{dest: B, src: B}, cycles: 4, advance: 1, flags: None},
         [0x41, ..] => DI{ins: LDMove8{dest: B, src: C}, cycles: 4, advance: 1, flags: None},
@@ -56,7 +56,7 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0x43, ..] => DI{ins: LDMove8{dest: B, src: E}, cycles: 4, advance: 1, flags: None},
         [0x44, ..] => DI{ins: LDMove8{dest: B, src: H}, cycles: 4, advance: 1, flags: None},
         [0x45, ..] => DI{ins: LDMove8{dest: B, src: L}, cycles: 4, advance: 1, flags: None},
-        [0x46, ..] => DI{ins: LDLoad{dest: B, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x46, ..] => DI{ins: LDLoad8{dest: B, addr: HL}, cycles: 8, advance: 1, flags: None},
 
         [0x48, ..] => DI{ins: LDMove8{dest: C, src: B}, cycles: 4, advance: 1, flags: None},
         [0x49, ..] => DI{ins: LDMove8{dest: C, src: C}, cycles: 4, advance: 1, flags: None},
@@ -64,7 +64,7 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0x4B, ..] => DI{ins: LDMove8{dest: C, src: E}, cycles: 4, advance: 1, flags: None},
         [0x4C, ..] => DI{ins: LDMove8{dest: C, src: H}, cycles: 4, advance: 1, flags: None},
         [0x4D, ..] => DI{ins: LDMove8{dest: C, src: L}, cycles: 4, advance: 1, flags: None},
-        [0x4E, ..] => DI{ins: LDLoad{dest: C, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x4E, ..] => DI{ins: LDLoad8{dest: C, addr: HL}, cycles: 8, advance: 1, flags: None},
 
         [0x50, ..] => DI{ins: LDMove8{dest: D, src: B}, cycles: 4, advance: 1, flags: None},
         [0x51, ..] => DI{ins: LDMove8{dest: D, src: C}, cycles: 4, advance: 1, flags: None},
@@ -72,7 +72,7 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0x53, ..] => DI{ins: LDMove8{dest: D, src: E}, cycles: 4, advance: 1, flags: None},
         [0x54, ..] => DI{ins: LDMove8{dest: D, src: H}, cycles: 4, advance: 1, flags: None},
         [0x55, ..] => DI{ins: LDMove8{dest: D, src: L}, cycles: 4, advance: 1, flags: None},
-        [0x56, ..] => DI{ins: LDLoad{dest: D, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x56, ..] => DI{ins: LDLoad8{dest: D, addr: HL}, cycles: 8, advance: 1, flags: None},
 
         [0x58, ..] => DI{ins: LDMove8{dest: E, src: B}, cycles: 4, advance: 1, flags: None},
         [0x59, ..] => DI{ins: LDMove8{dest: E, src: C}, cycles: 4, advance: 1, flags: None},
@@ -80,7 +80,7 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0x5B, ..] => DI{ins: LDMove8{dest: E, src: E}, cycles: 4, advance: 1, flags: None},
         [0x5C, ..] => DI{ins: LDMove8{dest: E, src: H}, cycles: 4, advance: 1, flags: None},
         [0x5D, ..] => DI{ins: LDMove8{dest: E, src: L}, cycles: 4, advance: 1, flags: None},
-        [0x5E, ..] => DI{ins: LDLoad{dest: E, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x5E, ..] => DI{ins: LDLoad8{dest: E, addr: HL}, cycles: 8, advance: 1, flags: None},
 
         [0x60, ..] => DI{ins: LDMove8{dest: H, src: B}, cycles: 4, advance: 1, flags: None},
         [0x61, ..] => DI{ins: LDMove8{dest: H, src: C}, cycles: 4, advance: 1, flags: None},
@@ -88,7 +88,7 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0x63, ..] => DI{ins: LDMove8{dest: H, src: E}, cycles: 4, advance: 1, flags: None},
         [0x64, ..] => DI{ins: LDMove8{dest: H, src: H}, cycles: 4, advance: 1, flags: None},
         [0x65, ..] => DI{ins: LDMove8{dest: H, src: L}, cycles: 4, advance: 1, flags: None},
-        [0x66, ..] => DI{ins: LDLoad{dest: H, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x66, ..] => DI{ins: LDLoad8{dest: H, addr: HL}, cycles: 8, advance: 1, flags: None},
 
         [0x68, ..] => DI{ins: LDMove8{dest: L, src: B}, cycles: 4, advance: 1, flags: None},
         [0x69, ..] => DI{ins: LDMove8{dest: L, src: C}, cycles: 4, advance: 1, flags: None},
@@ -96,21 +96,21 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0x6B, ..] => DI{ins: LDMove8{dest: L, src: E}, cycles: 4, advance: 1, flags: None},
         [0x6C, ..] => DI{ins: LDMove8{dest: L, src: H}, cycles: 4, advance: 1, flags: None},
         [0x6D, ..] => DI{ins: LDMove8{dest: L, src: L}, cycles: 4, advance: 1, flags: None},
-        [0x6E, ..] => DI{ins: LDLoad{dest: L, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x6E, ..] => DI{ins: LDLoad8{dest: L, addr: HL}, cycles: 8, advance: 1, flags: None},
 
-        [0x70, ..] => DI{ins: LDStore{src: B, addr: HL}, cycles: 8, advance: 1, flags: None},
-        [0x71, ..] => DI{ins: LDStore{src: C, addr: HL}, cycles: 8, advance: 1, flags: None},
-        [0x72, ..] => DI{ins: LDStore{src: D, addr: HL}, cycles: 8, advance: 1, flags: None},
-        [0x73, ..] => DI{ins: LDStore{src: E, addr: HL}, cycles: 8, advance: 1, flags: None},
-        [0x74, ..] => DI{ins: LDStore{src: H, addr: HL}, cycles: 8, advance: 1, flags: None},
-        [0x75, ..] => DI{ins: LDStore{src: L, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x70, ..] => DI{ins: LDStore8{src: B, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x71, ..] => DI{ins: LDStore8{src: C, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x72, ..] => DI{ins: LDStore8{src: D, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x73, ..] => DI{ins: LDStore8{src: E, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x74, ..] => DI{ins: LDStore8{src: H, addr: HL}, cycles: 8, advance: 1, flags: None},
+        [0x75, ..] => DI{ins: LDStore8{src: L, addr: HL}, cycles: 8, advance: 1, flags: None},
         [0x76, x, ..] => DI{ins: LDStoreImmediateHL{value: *x}, cycles: 12, advance: 2, flags: None},
 
         // sec 3.3.1.3
         // ignoring commands repeated from sec 3.3.1.2
-        [0x0A, ..] => DI{ins: LDLoad{dest: A, addr: BC}, cycles: 8, advance: 1, flags: None},
-        [0x1A, ..] => DI{ins: LDLoad{dest: A, addr: DE}, cycles: 8, advance: 1, flags: None},
-        [0xFA, l, h, ..] => DI{ins: LDLoadImmediateAddr{dest: A, addr: im16(h, l)}, cycles: 16, advance: 3, flags: None},
+        [0x0A, ..] => DI{ins: LDLoad8{dest: A, addr: BC}, cycles: 8, advance: 1, flags: None},
+        [0x1A, ..] => DI{ins: LDLoad8{dest: A, addr: DE}, cycles: 8, advance: 1, flags: None},
+        [0xFA, l, h, ..] => DI{ins: LDLoad8ImmediateAddr{dest: A, addr: im16(h, l)}, cycles: 16, advance: 3, flags: None},
         [0x3E, x, ..] => DI{ins: LD8Immediate{dest: A, value: *x}, cycles: 8, advance: 2, flags: None},
 
         // sec 3.3.1.4
@@ -120,9 +120,9 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0x5F, ..] => DI{ins: LDMove8{dest: E, src: A}, cycles: 4, advance: 1, flags: None},
         [0x67, ..] => DI{ins: LDMove8{dest: H, src: A}, cycles: 4, advance: 1, flags: None},
         [0x6F, ..] => DI{ins: LDMove8{dest: L, src: A}, cycles: 4, advance: 1, flags: None},
-        [0x02, ..] => DI{ins: LDStore{src: A, addr: BC}, cycles: 8, advance: 1, flags: None},
-        [0x12, ..] => DI{ins: LDStore{src: A, addr: DE}, cycles: 8, advance: 1, flags: None},
-        [0xEA, l, h, ..] => DI{ins: LDStoreImmediateAddr{addr: im16(h, l), src: A}, cycles: 16, advance: 3, flags: None},
+        [0x02, ..] => DI{ins: LDStore8{src: A, addr: BC}, cycles: 8, advance: 1, flags: None},
+        [0x12, ..] => DI{ins: LDStore8{src: A, addr: DE}, cycles: 8, advance: 1, flags: None},
+        [0xEA, l, h, ..] => DI{ins: LDStore8ImmediateAddr{addr: im16(h, l), src: A}, cycles: 16, advance: 3, flags: None},
 
         // sec 3.3.1.5
         [0xF2, ..] => DI{ins: LDLoadHigh{dest: A, addr: C}, cycles: 8, advance: 1, flags: None},
@@ -164,7 +164,7 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0xF8, x, ..] => DI{ins: LDHLSP {offset: *x as i8}, cycles: 12, advance: 2, flags: None},
 
         // sec 3.3.2.5
-        [0x08, l, h, ..] => DI{ins: LDStoreSP {addr: im16(h, l)}, cycles: 20, advance: 3, flags: None},
+        [0x08, l, h, ..] => DI{ins: LDStore16ImmediateAddr { src: SP, addr: im16(h, l)}, cycles: 20, advance: 3, flags: None},
 
         // sec 3.3.2.6
         [0xF5, ..] => DI{ins: PUSH {src: AF}, cycles: 16, advance: 1, flags: None},
