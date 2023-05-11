@@ -1,25 +1,45 @@
 use super::Reg16;
 use super::Reg8;
 
+/// An input or output of and instruction working on an 8-bit value
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq)]
-pub enum Operand {
-    /// 16-bit immediate value. nn
-    Immediate16(u16),
-
+pub enum Operand8 {
     /// 8-bit immediate value. n
     Immediate8(u8),
 
     /// Indirect addressing through 16-bit register. (BC), (DE), (HL), (SP)
     Indirect8(Reg16),
 
-    /// Indirect addressing through 16-bit immediate address. (nn)
-    IndirectImmediate8(u16),
+    /// Indirect addressing through 16-bit register with post decrement. (HL-)
+    Indirect8PostDec(Reg16),
 
-    /// 16-bit register. AF, BC, DE, HL, SP, PC
-    R16(Reg16),
+    /// Indirect addressing through 16-bit register with post increment. (HL+)
+    Indirect8PostInc(Reg16),
+
+    /// Indirect addressing of high 256 bytes through 8-bit register. (0xFF00 + A), (0xFF00 + F), (0xFF00 + B), (0xFF00 + C), (0xFF00 + D), (0xFF00 + E), (0xFF00 + H), (0xFF00 + L)
+    IndirectHigh8(Reg8),
+
+    /// Indirect addressing of high 256 bytes through 8-bit immediate offset. (0xFF00 + n)
+    IndirectImmediateHigh8(u8),
+
+    /// Indirect addressing of 8-bit byte through 16-bit immediate address. (nn)
+    IndirectImmediate8(u16),
 
     /// 8-bit register. A, F, B, C, D, E, H, L
     R8(Reg8),
+}
+
+/// An input or output of and instruction working on an 8-bit value
+#[derive(Debug, Ord, PartialOrd, Eq, PartialEq)]
+pub enum Operand16 {
+    /// 16-bit immediate value. nn
+    Immediate16(u16),
+
+    /// Indirect addressing of 16-bit byte through 16-bit immediate address. (nn)
+    IndirectImmediate16(u16),
+
+    /// 16-bit register. AF, BC, DE, HL, SP, PC
+    R16(Reg16),
 }
 
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq)]
@@ -43,8 +63,15 @@ pub enum Flags {
 /// This enumeration identifies each of the instructions that the CPU can execute
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq)]
 pub enum Instruction {
+    /// Copies an 8-bit value into register or address
+    LD8 { dest: Operand8, src: Operand8 },
+
     /// Load value into register
-    LD { dest: Operand, src: Operand },
+    LD16 { dest: Operand16, src: Operand16 },
+
+
+    /// Load value into register
+    LDHL { dest: Reg16, src: Reg16, n: i8 },
 
     /// Push 16-bit value onto stack
     PUSH { src: Reg16 },
@@ -52,38 +79,47 @@ pub enum Instruction {
     /// Pop 16-bit value from stack into register pair
     POP { dest: Reg16 },
 
-    /// Add operand to accumulator
-    ADD { dest: Operand, src: Operand },
+    /// Add 8-bit value to accumulator
+    ADD8 { rhs: Operand8 },
 
-    /// Add operand to accumulator with carry
-    ADC { dest: Operand, src: Operand },
+    /// Add 8-bit value to accumulator
+    ADD16 { rhs: Operand8 },
 
-    /// Subtract operand from accumulator
-    SUB { dest: Operand, src: Operand },
+    /// Add 8-bit value  to accumulator with carry
+    ADC8 { rhs: Operand8 },
 
-    /// Subtract with carry
-    SBC { dest: Operand, src: Operand },
+    /// Subtract 8-bit value to accumulator
+    SUB8 { rhs: Operand8 },
 
-    /// AND operand with accumulator
-    AND { dest: Operand, src: Operand },
+    /// Subtract 8-bit value  to accumulator with carry
+    SBC8 { rhs: Operand8 },
 
-    /// OR operand with accumulator
-    OR { dest: Operand, src: Operand },
+    /// Bitwise AND 8-bit value to accumulator
+    AND8 { rhs: Operand8 },
 
-    /// Exclusive OR operand with accumulator
-    XOR { dest: Operand, src: Operand },
+    /// Bitwise OR 8-bit value to accumulator
+    OR8 { rhs: Operand8 },
 
-    /// Compare operand with accumulator
-    CP { dest: Operand, src: Operand },
+    /// Bitwise XOR 8-bit value to accumulator
+    XOR8 { rhs: Operand8 },
 
-    /// Increment operand
-    INC { src: Operand },
+    /// Compare 8-bit value to accumulator
+    CP8 { rhs: Operand8 },
 
-    /// Decrement operand
-    DEC { src: Operand },
+    /// Increment 8-bit operand
+    INC8 { target: Operand8 },
+
+    /// Increment 16-bit operand
+    INC16 { target: Reg16 },
+
+    /// Decrement 8-bit operand
+    DEC8 { target: Operand8 },
+
+    /// Decrement 15-bit operand
+    DEC16 { target: Reg16 },
 
     /// Swap upper and lower nibbles of operand
-    SWAP { src: Operand },
+    SWAP8 { target: Operand8 },
 
     /// Decimal adjust accumulator
     DAA,
@@ -125,43 +161,43 @@ pub enum Instruction {
     RRA,
 
     /// Rotate operand left
-    RLC { src: Operand },
+    RLC { src: Operand8 },
 
     /// Rotate operand left through carry
-    RL { src: Operand },
+    RL { src: Operand8 },
 
     /// Rotate operand right
-    RRC { src: Operand },
+    RRC { src: Operand8 },
 
     /// Rotate operand right through carry
-    RR { src: Operand },
+    RR { src: Operand8 },
 
     /// Shift operand left into carry. LSB of n set to 0.
-    SLA { src: Operand },
+    SLA { src: Operand8 },
 
     /// Shift operand right into carry. MSB doesn't change.
-    SRA { src: Operand },
+    SRA { src: Operand8 },
 
     /// Shift operand right into carry. MSB set to 0.
-    SRL { src: Operand },
+    SRL { src: Operand8 },
 
     /// Test bit in operand
-    BIT { bit: u8, src: Operand },
+    BIT { bit: u8, src: Operand8 },
 
     /// Set bit in operand
-    SET { bit: u8, src: Operand },
+    SET { bit: u8, src: Operand8 },
 
     /// Reset bit in operand
-    RES { bit: u8, src: Operand },
+    RES { bit: u8, src: Operand8 },
 
     /// Jump to address
-    JP { addr: Operand, cond: Flags },
+    JP { addr: Operand16, cond: Flags },
 
     /// Jump to address relative to current address
     JR { cond: Flags, offset: i8 },
 
     /// Call subroutine at address
-    CALL { addr: Operand, cond: Flags },
+    CALL { addr: Operand16, cond: Flags },
 
     /// Call subroutine at address
     RST { addr: u8 },

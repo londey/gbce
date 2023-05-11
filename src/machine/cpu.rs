@@ -2,7 +2,7 @@ mod decoder;
 mod instruction_set;
 
 pub use instruction_set::Instruction;
-pub use instruction_set::Operand;
+pub use instruction_set::Operand8;
 pub use instruction_set::Flags;
 
 pub enum Interupts {
