@@ -161,25 +161,25 @@ pub enum Instruction {
     RRA,
 
     /// Rotate operand left
-    RLC { src: Operand8 },
+    RLC { target: Operand8 },
 
     /// Rotate operand left through carry
-    RL { src: Operand8 },
+    RL { target: Operand8 },
 
     /// Rotate operand right
-    RRC { src: Operand8 },
+    RRC { target: Operand8 },
 
     /// Rotate operand right through carry
-    RR { src: Operand8 },
+    RR { target: Operand8 },
 
     /// Shift operand left into carry. LSB of n set to 0.
-    SLA { src: Operand8 },
+    SLA { target: Operand8 },
 
     /// Shift operand right into carry. MSB doesn't change.
-    SRA { src: Operand8 },
+    SRA { target: Operand8 },
 
     /// Shift operand right into carry. MSB set to 0.
-    SRL { src: Operand8 },
+    SRL { target: Operand8 },
 
     /// Test bit in operand
     BIT { bit: u8, src: Operand8 },

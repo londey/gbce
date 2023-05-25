@@ -373,6 +373,106 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         // 3.3.5.8 STOP
         [0x10, 0x00, ..] => DI{ins: STOP, cycles: 4, advance: 2, flags: None },
 
+        // 3.3.5.9 DI
+        [0xF3, ..] => DI{ins: DI, cycles: 4, advance: 1, flags: None },
+
+        // 3.3.5.10 EI
+        [0xFB, ..] => DI{ins: EI, cycles: 4, advance: 1, flags: None },
+
+        // sec 3.3.6.1 RLCA
+        [0x07, ..] => DI{ins: RLCA, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+
+        // sec 3.3.6.2 RLA
+        [0x17, ..] => DI{ins: RLA, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+
+        // sec 3.3.6.3 RRCA
+        [0x0F, ..] => DI{ins: RRCA, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+
+        // sec 3.3.6.4 RRA
+        [0x1F, ..] => DI{ins: RRA, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
+
+        // sec 3.3.6.5 RLC n
+        [0xCB, 0x07, ..] => DI{ins: RLC {target: R8(A)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x00, ..] => DI{ins: RLC {target: R8(B)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x01, ..] => DI{ins: RLC {target: R8(C)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x02, ..] => DI{ins: RLC {target: R8(D)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x03, ..] => DI{ins: RLC {target: R8(E)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x04, ..] => DI{ins: RLC {target: R8(H)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x05, ..] => DI{ins: RLC {target: R8(L)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x06, ..] => DI{ins: RLC {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }, //Some(Flags::Z)},
+
+        // sec 3.3.6.6 RL n
+        [0xCB, 0x17, ..] => DI{ins: RL {target: R8(A)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x10, ..] => DI{ins: RL {target: R8(B)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x11, ..] => DI{ins: RL {target: R8(C)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x12, ..] => DI{ins: RL {target: R8(D)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x13, ..] => DI{ins: RL {target: R8(E)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x14, ..] => DI{ins: RL {target: R8(H)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x15, ..] => DI{ins: RL {target: R8(L)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x16, ..] => DI{ins: RL {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }, //Some(Flags::Z)},
+
+        // sec 3.3.6.7 RRC n
+        [0xCB, 0x0F, ..] => DI{ins: RRC {target: R8(A)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x08, ..] => DI{ins: RRC {target: R8(B)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x09, ..] => DI{ins: RRC {target: R8(C)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x0A, ..] => DI{ins: RRC {target: R8(D)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x0B, ..] => DI{ins: RRC {target: R8(E)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x0C, ..] => DI{ins: RRC {target: R8(H)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x0D, ..] => DI{ins: RRC {target: R8(L)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x0E, ..] => DI{ins: RRC {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }, //Some(Flags::Z)},
+
+        // sec 3.3.6.8 RR n
+        [0xCB, 0x1F, ..] => DI{ins: RR {target: R8(A)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x18, ..] => DI{ins: RR {target: R8(B)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x19, ..] => DI{ins: RR {target: R8(C)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x1A, ..] => DI{ins: RR {target: R8(D)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x1B, ..] => DI{ins: RR {target: R8(E)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x1C, ..] => DI{ins: RR {target: R8(H)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x1D, ..] => DI{ins: RR {target: R8(L)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x1E, ..] => DI{ins: RR {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }, //Some(Flags::Z)},
+
+        // sec 3.3.6.9 SLA n
+        [0xCB, 0x27, ..] => DI{ins: SLA {target: R8(A)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x20, ..] => DI{ins: SLA {target: R8(B)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x21, ..] => DI{ins: SLA {target: R8(C)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x22, ..] => DI{ins: SLA {target: R8(D)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x23, ..] => DI{ins: SLA {target: R8(E)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x24, ..] => DI{ins: SLA {target: R8(H)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x25, ..] => DI{ins: SLA {target: R8(L)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x26, ..] => DI{ins: SLA {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }, //Some(Flags::Z)},
+
+        // sec 3.3.6.10 SRA n
+        [0xCB, 0x2F, ..] => DI{ins: SRA {target: R8(A)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x28, ..] => DI{ins: SRA {target: R8(B)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x29, ..] => DI{ins: SRA {target: R8(C)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x2A, ..] => DI{ins: SRA {target: R8(D)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x2B, ..] => DI{ins: SRA {target: R8(E)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x2C, ..] => DI{ins: SRA {target: R8(H)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x2D, ..] => DI{ins: SRA {target: R8(L)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x2E, ..] => DI{ins: SRA {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }, //Some(Flags::Z)},
+
+        // sec 3.3.6.11 SRL n
+        [0xCB, 0x3F, ..] => DI{ins: SRL {target: R8(A)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x38, ..] => DI{ins: SRL {target: R8(B)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x39, ..] => DI{ins: SRL {target: R8(C)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x3A, ..] => DI{ins: SRL {target: R8(D)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x3B, ..] => DI{ins: SRL {target: R8(E)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x3C, ..] => DI{ins: SRL {target: R8(H)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x3D, ..] => DI{ins: SRL {target: R8(L)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x3E, ..] => DI{ins: SRL {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }, //Some(Flags::Z)},
+
+        // src 3.3.7.1 BIT b,r
+        // [0xCB, 0x3F, ..] => DI{ins: BIT {target: R8(A)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        // [0xCB, 0x38, ..] => DI{ins: BIT {target: R8(B)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        // [0xCB, 0x39, ..] => DI{ins: BIT {target: R8(C)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        // [0xCB, 0x3A, ..] => DI{ins: BIT {target: R8(D)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        // [0xCB, 0x3B, ..] => DI{ins: BIT {target: R8(E)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        // [0xCB, 0x3C, ..] => DI{ins: BIT {target: R8(H)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        // [0xCB, 0x3D, ..] => DI{ins: BIT {target: R8(L)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        // [0xCB, 0x3E, ..] => DI{ins: BIT {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }, //Some(Flags::Z)},
+
+
+
         _ => panic!("unimplemented instruction")
     }
 }
