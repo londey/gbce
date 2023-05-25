@@ -195,7 +195,7 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         // N/A
 
         // sec 3.3.2.4 Put SP + n effective address into HL.
-        [0xF8, x, ..] => unimplemented!(), //DI{ins: LDHL {dest: R16(HL), lhs: R16(SP), rhs: *x as i8}, cycles: 12, advance: 2, flags: None},
+        [0xF8, _x, ..] => unimplemented!(), //DI{ins: LDHL {dest: R16(HL), lhs: R16(SP), rhs: *x as i8}, cycles: 12, advance: 2, flags: None},
 
         // sec 3.3.2.5 Put Stack Pointer (SP) at address n.
         [0x08, l, h, ..] => DI{ins: LD16 { src: R16(SP), dest: IndirectImmediate16(im16(h, l))}, cycles: 20, advance: 3, flags: None},
@@ -224,7 +224,7 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0x86, ..] => DI{ins: ADD8 {rhs: Indirect8(HL)}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
         [0xC6, x, ..] => DI{ins: ADD8 { rhs: Immediate8(*x) }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z | Flags::HC)},
 
-        // sec 3.3.3.2
+        // sec 3.3.3.2 
         [0x8F, ..] => DI{ins: ADC8 {rhs: R8(A)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
         [0x88, ..] => DI{ins: ADC8 {rhs: R8(B)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
         [0x89, ..] => DI{ins: ADC8 {rhs: R8(C)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
@@ -235,7 +235,7 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0x8E, ..] => DI{ins: ADC8{rhs: Indirect8(HL)}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
         [0xCE, x, ..] => DI{ins: ADC8{ rhs: Immediate8(*x) }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z | Flags::HC)},
 
-        // sec 3.3.3.3
+        // sec 3.3.3.3 SUB n
         [0x97, ..] => DI{ins: SUB8 {rhs: R8(A)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
         [0x90, ..] => DI{ins: SUB8 {rhs: R8(B)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
         [0x91, ..] => DI{ins: SUB8 {rhs: R8(C)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
@@ -246,7 +246,7 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0x96, ..] => DI{ins: SUB8 {rhs: Indirect8(HL)}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
         [0xD6, x, ..] => DI{ins: SUB8{ rhs: Immediate8(*x) }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
 
-        // sec 3.3.3.4
+        // sec 3.3.3.4 SBC A,n
         [0x9F, ..] => DI{ins: SBC8 {rhs: R8(A)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
         [0x98, ..] => DI{ins: SBC8 {rhs: R8(B)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
         [0x99, ..] => DI{ins: SBC8 {rhs: R8(C)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
@@ -257,7 +257,7 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0x9E, ..] => DI{ins: SBC8 {rhs: Indirect8(HL)}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
         [0xDE, x, ..] => DI{ins: SBC8{ rhs: Immediate8(*x) }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z | Flags::HC | Flags::N)},
 
-        // sec 3.3.3.5
+        // sec 3.3.3.5 AND n
         [0xA7, ..] => DI{ins: AND8 {rhs: R8(A)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
         [0xA0, ..] => DI{ins: AND8 {rhs: R8(B)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
         [0xA1, ..] => DI{ins: AND8 {rhs: R8(C)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
@@ -268,7 +268,7 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0xA6, ..] => DI{ins: AND8 {rhs: Indirect8(HL)}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
         [0xE6, x, ..] => DI{ins: AND8{ rhs: Immediate8(*x) }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z | Flags::HC)},
 
-        // sec 3.3.3.6
+        // sec 3.3.3.6 OR n
         [0xB7, ..] => DI{ins: OR8 {rhs: R8(A)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
         [0xB0, ..] => DI{ins: OR8 {rhs: R8(B)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
         [0xB1, ..] => DI{ins: OR8 {rhs: R8(C)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
@@ -279,7 +279,7 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0xB6, ..] => DI{ins: OR8 {rhs: Indirect8(HL)}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z)},
         [0xF6, x, ..] => DI{ins: OR8{ rhs: Immediate8(*x) }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
 
-        // sec 3.3.3.7
+        // sec 3.3.3.7 XOR n
         [0xAF, ..] => DI{ins: XOR8 {rhs: R8(A)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
         [0xA8, ..] => DI{ins: XOR8 {rhs: R8(B)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
         [0xA9, ..] => DI{ins: XOR8 {rhs: R8(C)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z)},
@@ -290,7 +290,7 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0xAE, ..] => DI{ins: XOR8 {rhs: Indirect8(HL)}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z)},
         [0xEE, x, ..] => DI{ins: XOR8{ rhs: Immediate8(*x) }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
 
-        // sec 3.3.3.8
+        // sec 3.3.3.8 CP n
         [0xBF, ..] => DI{ins: CP8 {rhs: R8(A)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::C)},
         [0xB8, ..] => DI{ins: CP8 {rhs: R8(B)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::C)},
         [0xB9, ..] => DI{ins: CP8 {rhs: R8(C)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::C)},
@@ -301,8 +301,77 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> DecodedInstruction 
         [0xBE, ..] => DI{ins: CP8 {rhs: Indirect8(HL)}, cycles: 8, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC | Flags::C)},
         [0xFE, x, ..] => DI{ins: CP8{ rhs: Immediate8(*x) }, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z | Flags::HC | Flags::C)},
 
+        // sec 3.3.3.9 INC n
+        [0x3C, ..] => DI{ins: INC8 {target: R8(A)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x04, ..] => DI{ins: INC8 {target: R8(B)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x0C, ..] => DI{ins: INC8 {target: R8(C)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x14, ..] => DI{ins: INC8 {target: R8(D)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x1C, ..] => DI{ins: INC8 {target: R8(E)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x24, ..] => DI{ins: INC8 {target: R8(H)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x2C, ..] => DI{ins: INC8 {target: R8(L)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        [0x34, ..] => DI{ins: INC8 {target: Indirect8(HL)}, cycles: 12, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
 
+        // sec 3.3.3.10 DEC n
+        [0x3D, ..] => DI{ins: DEC8 {target: R8(A)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::N | Flags::HC)},
+        [0x05, ..] => DI{ins: DEC8 {target: R8(B)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::N | Flags::HC)},
+        [0x0D, ..] => DI{ins: DEC8 {target: R8(C)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::N | Flags::HC)},
+        [0x15, ..] => DI{ins: DEC8 {target: R8(D)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::N | Flags::HC)},
+        [0x1D, ..] => DI{ins: DEC8 {target: R8(E)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::N | Flags::HC)},
+        [0x25, ..] => DI{ins: DEC8 {target: R8(H)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::N | Flags::HC)},
+        [0x2D, ..] => DI{ins: DEC8 {target: R8(L)}, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::N | Flags::HC)},
+        [0x35, ..] => DI{ins: DEC8 {target: Indirect8(HL)}, cycles: 12, advance: 1, flags: None }, //Some(Flags::Z | Flags::N | Flags::HC)},
+
+        // sec 3.3.4.1 ADD HL,n
+        [0x09, ..] => DI{ins: ADD16 {dest: R16(HL), rhs: R16(BC)}, cycles: 8, advance: 1, flags: None }, //Some(Flags::HC | Flags::C)},
+        [0x19, ..] => DI{ins: ADD16 {dest: R16(HL), rhs: R16(DE)}, cycles: 8, advance: 1, flags: None }, //Some(Flags::HC | Flags::C)},
+        [0x29, ..] => DI{ins: ADD16 {dest: R16(HL), rhs: R16(HL)}, cycles: 8, advance: 1, flags: None }, //Some(Flags::HC | Flags::C)},
+        [0x39, ..] => DI{ins: ADD16 {dest: R16(HL), rhs: R16(SP)}, cycles: 8, advance: 1, flags: None }, //Some(Flags::HC | Flags::C)},
+
+        // sec 3.3.4.2 ADD SP, n
+        [0xE8, x, ..] => unimplemented!(), //DI{ins: ADD16 {dest: R16(SP), rhs: Immediate16(*x as i8 as u16)}, cycles: 16, advance: 2, flags: None }, //Some(Flags::Z | Flags::N | Flags::HC | Flags::C)},
         
+        // sec 3.3.4.3 INC nn
+        [0x03, ..] => DI{ins: INC16 {target: BC}, cycles: 8, advance: 1, flags: None },
+        [0x13, ..] => DI{ins: INC16 {target: DE}, cycles: 8, advance: 1, flags: None },
+        [0x23, ..] => DI{ins: INC16 {target: HL}, cycles: 8, advance: 1, flags: None },
+        [0x33, ..] => DI{ins: INC16 {target: SP}, cycles: 8, advance: 1, flags: None },
+
+        // sec 3.3.4.4 DEC nn
+        [0x0B, ..] => DI{ins: DEC16 {target: BC}, cycles: 8, advance: 1, flags: None },
+        [0x1B, ..] => DI{ins: DEC16 {target: DE}, cycles: 8, advance: 1, flags: None },
+        [0x2B, ..] => DI{ins: DEC16 {target: HL}, cycles: 8, advance: 1, flags: None },
+        [0x3B, ..] => DI{ins: DEC16 {target: SP}, cycles: 8, advance: 1, flags: None },
+
+        // sec 3.3.5.1 SWAP n
+        [0xCB, 0x37, ..] => DI{ins: SWAP8 {target: R8(A)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x30, ..] => DI{ins: SWAP8 {target: R8(B)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x31, ..] => DI{ins: SWAP8 {target: R8(C)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x32, ..] => DI{ins: SWAP8 {target: R8(D)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x33, ..] => DI{ins: SWAP8 {target: R8(E)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x34, ..] => DI{ins: SWAP8 {target: R8(H)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x35, ..] => DI{ins: SWAP8 {target: R8(L)}, cycles: 8, advance: 2, flags: None }, //Some(Flags::Z)},
+        [0xCB, 0x36, ..] => DI{ins: SWAP8 {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }, //Some(Flags::Z)},
+
+        // sec 3.3.5.2 DDA
+        [0x27, ..] => DI{ins: DAA, cycles: 4, advance: 1, flags: None }, //Some(Flags::Z | Flags::HC)},
+        
+        // sec 3.3.5.3 CPL
+        [0x2F, ..] => DI{ins: CPL, cycles: 4, advance: 1, flags: None }, //Some(Flags::N | Flags::HC)},
+        
+        // sec 3.3.5.4 CCF
+        [0x3F, ..] => DI{ins: CCF, cycles: 4, advance: 1, flags: None }, //Some(Flags::C)},
+        
+        // sec 3.3.5.5 SCF
+        [0x37, ..] => DI{ins: SCF, cycles: 4, advance: 1, flags: None }, //Some(Flags::C)},
+
+        // 3.3.5.6 NOP
+        [0x00, ..] => DI{ins: NOP, cycles: 4, advance: 1, flags: None },
+
+        // 3.3.5.7 HALT
+        [0x76, ..] => DI{ins: HALT, cycles: 4, advance: 1, flags: None },
+
+        // 3.3.5.8 STOP
+        [0x10, 0x00, ..] => DI{ins: STOP, cycles: 4, advance: 2, flags: None },
 
         _ => panic!("unimplemented instruction")
     }

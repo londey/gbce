@@ -82,8 +82,8 @@ pub enum Instruction {
     /// Add 8-bit value to accumulator
     ADD8 { rhs: Operand8 },
 
-    /// Add 8-bit value to accumulator
-    ADD16 { rhs: Operand8 },
+    /// Add 16-bit value to HL
+    ADD16 { dest: Operand16, rhs: Operand16 },
 
     /// Add 8-bit value  to accumulator with carry
     ADC8 { rhs: Operand8 },
