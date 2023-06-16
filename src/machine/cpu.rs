@@ -1,9 +1,9 @@
 mod decoder;
 mod instruction_set;
 
+pub use instruction_set::Flags;
 pub use instruction_set::Instruction;
 pub use instruction_set::Operand8;
-pub use instruction_set::Flags;
 
 pub enum Interupts {
     VBlank,
@@ -14,7 +14,7 @@ pub enum Interupts {
 }
 
 /// This struct represents the state of the CPU registers
-/// 
+///
 /// | 15..8 |  7..0 |
 /// | ----- | ----- |
 /// |   A   |   F   |

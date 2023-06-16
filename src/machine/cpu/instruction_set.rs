@@ -72,7 +72,6 @@ pub enum Instruction {
     /// Load value into register
     LD16 { dest: Operand16, src: Operand16 },
 
-
     /// Load value into register
     LDHL { dest: Reg16, src: Reg16, n: i8 },
 
