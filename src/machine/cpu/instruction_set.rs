@@ -65,6 +65,7 @@ pub enum Flags {
 
 /// This enumeration identifies each of the instructions that the CPU can execute
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq)]
+#[allow(clippy::upper_case_acronyms)]
 pub enum Instruction {
     /// Copies an 8-bit value into register or address
     LD8 { dest: Operand8, src: Operand8 },

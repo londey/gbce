@@ -26,7 +26,7 @@ struct MachineMutation {}
 impl MachineState {
     pub fn new(cart: Cart) -> Self {
         MachineState {
-            cart: cart,
+            cart,
             cpu: cpu::CpuState::new(),
             system_ram: ram::Ram::new(memory_map::SYSTEM_RAM),
             video_ram: ram::Ram::new(memory_map::VIDEO_RAM),
