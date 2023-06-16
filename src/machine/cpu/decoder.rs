@@ -1,4 +1,3 @@
-use serde_json::Error;
 
 use crate::machine::cpu::Flags;
 
@@ -36,8 +35,15 @@ pub struct DecodedInstruction {
     flags: Option<u8>,
 }
 
+#[derive(Debug)]
+pub enum DecodeError {
+    DecodeError,
+    // Add more error types as needed.
+}
+
+
 #[rustfmt::skip]
-pub fn decode_next_instruction(instruction_stream: &[u8]) -> Result<DecodedInstruction, Error> {
+pub fn decode_next_instruction(instruction_stream: &[u8]) -> Result<DecodedInstruction, DecodeError> {
     use DecodedInstruction as DI;
     use Reg8::*;
     use Reg16::*;
@@ -395,129 +401,8 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> Result<DecodedInstr
         // sec 3.3.6.4 RRA
         [0x1F, ..] => Ok(DI{ins: RRA, cycles: 4, advance: 1, flags: None }),
 
-        // sec 3.3.6.5 RLC n
-        [0xCB, 0x07, ..] => Ok(DI{ins: RLC {target: R8(A)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x00, ..] => Ok(DI{ins: RLC {target: R8(B)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x01, ..] => Ok(DI{ins: RLC {target: R8(C)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x02, ..] => Ok(DI{ins: RLC {target: R8(D)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x03, ..] => Ok(DI{ins: RLC {target: R8(E)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x04, ..] => Ok(DI{ins: RLC {target: R8(H)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x05, ..] => Ok(DI{ins: RLC {target: R8(L)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x06, ..] => Ok(DI{ins: RLC {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }),
-
-        // sec 3.3.6.6 RL n
-        [0xCB, 0x17, ..] => Ok(DI{ins: RL {target: R8(A)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x10, ..] => Ok(DI{ins: RL {target: R8(B)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x11, ..] => Ok(DI{ins: RL {target: R8(C)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x12, ..] => Ok(DI{ins: RL {target: R8(D)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x13, ..] => Ok(DI{ins: RL {target: R8(E)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x14, ..] => Ok(DI{ins: RL {target: R8(H)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x15, ..] => Ok(DI{ins: RL {target: R8(L)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x16, ..] => Ok(DI{ins: RL {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }),
-
-        // sec 3.3.6.7 RRC n
-        [0xCB, 0x0F, ..] => Ok(DI{ins: RRC {target: R8(A)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x08, ..] => Ok(DI{ins: RRC {target: R8(B)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x09, ..] => Ok(DI{ins: RRC {target: R8(C)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x0A, ..] => Ok(DI{ins: RRC {target: R8(D)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x0B, ..] => Ok(DI{ins: RRC {target: R8(E)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x0C, ..] => Ok(DI{ins: RRC {target: R8(H)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x0D, ..] => Ok(DI{ins: RRC {target: R8(L)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x0E, ..] => Ok(DI{ins: RRC {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }),
-
-        // sec 3.3.6.8 RR n
-        [0xCB, 0x1F, ..] => Ok(DI{ins: RR {target: R8(A)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x18, ..] => Ok(DI{ins: RR {target: R8(B)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x19, ..] => Ok(DI{ins: RR {target: R8(C)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x1A, ..] => Ok(DI{ins: RR {target: R8(D)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x1B, ..] => Ok(DI{ins: RR {target: R8(E)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x1C, ..] => Ok(DI{ins: RR {target: R8(H)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x1D, ..] => Ok(DI{ins: RR {target: R8(L)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x1E, ..] => Ok(DI{ins: RR {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }),
-
-        // sec 3.3.6.9 SLA n
-        [0xCB, 0x27, ..] => Ok(DI{ins: SLA {target: R8(A)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x20, ..] => Ok(DI{ins: SLA {target: R8(B)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x21, ..] => Ok(DI{ins: SLA {target: R8(C)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x22, ..] => Ok(DI{ins: SLA {target: R8(D)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x23, ..] => Ok(DI{ins: SLA {target: R8(E)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x24, ..] => Ok(DI{ins: SLA {target: R8(H)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x25, ..] => Ok(DI{ins: SLA {target: R8(L)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x26, ..] => Ok(DI{ins: SLA {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }),
-
-        // sec 3.3.6.10 SRA n
-        [0xCB, 0x2F, ..] => Ok(DI{ins: SRA {target: R8(A)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x28, ..] => Ok(DI{ins: SRA {target: R8(B)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x29, ..] => Ok(DI{ins: SRA {target: R8(C)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x2A, ..] => Ok(DI{ins: SRA {target: R8(D)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x2B, ..] => Ok(DI{ins: SRA {target: R8(E)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x2C, ..] => Ok(DI{ins: SRA {target: R8(H)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x2D, ..] => Ok(DI{ins: SRA {target: R8(L)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x2E, ..] => Ok(DI{ins: SRA {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }),
-
-        // sec 3.3.6.11 SRL n
-        [0xCB, 0x3F, ..] => Ok(DI{ins: SRL {target: R8(A)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x38, ..] => Ok(DI{ins: SRL {target: R8(B)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x39, ..] => Ok(DI{ins: SRL {target: R8(C)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x3A, ..] => Ok(DI{ins: SRL {target: R8(D)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x3B, ..] => Ok(DI{ins: SRL {target: R8(E)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x3C, ..] => Ok(DI{ins: SRL {target: R8(H)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x3D, ..] => Ok(DI{ins: SRL {target: R8(L)}, cycles: 8, advance: 2, flags: None }),
-        [0xCB, 0x3E, ..] => Ok(DI{ins: SRL {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }),
-
-        // sec 3.3.7.1 BIT b,r
-        [0xCB, x, ..] if x & 0b1100_0000 == 0x40 => 
-        {
-            let bit = (x & 0b0011_1000) >> 3;
-            let register = x & 0b0000_0111;
-            match register {
-                0 => Ok(DI{ins: BIT {src: R8(B), bit}, cycles: 8, advance: 2, flags: None }),
-                1 => Ok(DI{ins: BIT {src: R8(C), bit}, cycles: 8, advance: 2, flags: None }),
-                2 => Ok(DI{ins: BIT {src: R8(D), bit}, cycles: 8, advance: 2, flags: None }),
-                3 => Ok(DI{ins: BIT {src: R8(E), bit}, cycles: 8, advance: 2, flags: None }),
-                4 => Ok(DI{ins: BIT {src: R8(H), bit}, cycles: 8, advance: 2, flags: None }),
-                5 => Ok(DI{ins: BIT {src: R8(L), bit}, cycles: 8, advance: 2, flags: None }),
-                6 => Ok(DI{ins: BIT {src: Indirect8(HL), bit}, cycles: 16, advance: 2, flags: None }),
-                7 => Ok(DI{ins: BIT {src: R8(A), bit}, cycles: 8, advance: 2, flags: None }),
-                _ => unreachable!(),
-            }
-        }
-
-        // sec 3.3.7.2 SET b,r
-        [0xCB, x, ..] if x & 0b1100_0000 == 0xC0 => 
-        {
-            let bit = (x & 0b0011_1000) >> 3;
-            let register = x & 0b0000_0111;
-            match register {
-                0 => Ok(DI{ins: SET {dest: R8(B), bit}, cycles: 8, advance: 2, flags: None }),
-                1 => Ok(DI{ins: SET {dest: R8(C), bit}, cycles: 8, advance: 2, flags: None }),
-                2 => Ok(DI{ins: SET {dest: R8(D), bit}, cycles: 8, advance: 2, flags: None }),
-                3 => Ok(DI{ins: SET {dest: R8(E), bit}, cycles: 8, advance: 2, flags: None }),
-                4 => Ok(DI{ins: SET {dest: R8(H), bit}, cycles: 8, advance: 2, flags: None }),
-                5 => Ok(DI{ins: SET {dest: R8(L), bit}, cycles: 8, advance: 2, flags: None }),
-                6 => Ok(DI{ins: SET {dest: Indirect8(HL), bit}, cycles: 16, advance: 2, flags: None }),
-                7 => Ok(DI{ins: SET {dest: R8(A), bit}, cycles: 8, advance: 2, flags: None }),
-                _ => unreachable!(),
-            }
-        }
-
-        // sec 3.3.7.3 RES b,r
-        [0xCB, x, ..] if x & 0b1100_0000 == 0x80 => 
-        {
-            let bit = (x & 0b0011_1000) >> 3;
-            let register = x & 0b0000_0111;
-            match register {
-                0 => Ok(DI{ins: RES {dest: R8(B), bit}, cycles: 8, advance: 2, flags: None }),
-                1 => Ok(DI{ins: RES {dest: R8(C), bit}, cycles: 8, advance: 2, flags: None }),
-                2 => Ok(DI{ins: RES {dest: R8(D), bit}, cycles: 8, advance: 2, flags: None }),
-                3 => Ok(DI{ins: RES {dest: R8(E), bit}, cycles: 8, advance: 2, flags: None }),
-                4 => Ok(DI{ins: RES {dest: R8(H), bit}, cycles: 8, advance: 2, flags: None }),
-                5 => Ok(DI{ins: RES {dest: R8(L), bit}, cycles: 8, advance: 2, flags: None }),
-                6 => Ok(DI{ins: RES {dest: Indirect8(HL), bit}, cycles: 16, advance: 2, flags: None }),
-                7 => Ok(DI{ins: RES {dest: R8(A), bit}, cycles: 8, advance: 2, flags: None }),
-                _ => unreachable!(),
-            }
-        }
+        // handle CB instructions
+        [0xCB, x, ..] => decode_cb_instruction(*x).map_err(|_| DecodeError::DecodeError),
 
         // sec 3.3.8.1 JP nn
         [0xC3, l, h, ..] => Ok(DI{ins: JP {addr: Immediate16(im16(h, l)), cond: Flags::Always}, cycles: 16, advance: 3, flags: None }),
@@ -571,7 +456,141 @@ pub fn decode_next_instruction(instruction_stream: &[u8]) -> Result<DecodedInstr
         // sec RETI
         [0xD9, ..] => Ok(DI{ins: RETI, cycles: 8, advance: 1, flags: None }),
 
-        _ => unreachable!(),
+        _ => Err(DecodeError::DecodeError),
+    }
+}
+
+fn decode_cb_instruction(parameter: u8) -> Result<DecodedInstruction, ()> {
+    use DecodedInstruction as DI;
+    use Reg8::*;
+    use Reg16::HL;
+
+    match parameter {
+        // sec 3.3.6.5 RLC n
+        0x07 => Ok(DI{ins: RLC {target: R8(A)}, cycles: 8, advance: 2, flags: None }),
+        0x00 => Ok(DI{ins: RLC {target: R8(B)}, cycles: 8, advance: 2, flags: None }),
+        0x01 => Ok(DI{ins: RLC {target: R8(C)}, cycles: 8, advance: 2, flags: None }),
+        0x02 => Ok(DI{ins: RLC {target: R8(D)}, cycles: 8, advance: 2, flags: None }),
+        0x03 => Ok(DI{ins: RLC {target: R8(E)}, cycles: 8, advance: 2, flags: None }),
+        0x04 => Ok(DI{ins: RLC {target: R8(H)}, cycles: 8, advance: 2, flags: None }),
+        0x05 => Ok(DI{ins: RLC {target: R8(L)}, cycles: 8, advance: 2, flags: None }),
+        0x06 => Ok(DI{ins: RLC {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }),
+
+        // sec 3.3.6.6 RL n
+        0x17 => Ok(DI{ins: RL {target: R8(A)}, cycles: 8, advance: 2, flags: None }),
+        0x10 => Ok(DI{ins: RL {target: R8(B)}, cycles: 8, advance: 2, flags: None }),
+        0x11 => Ok(DI{ins: RL {target: R8(C)}, cycles: 8, advance: 2, flags: None }),
+        0x12 => Ok(DI{ins: RL {target: R8(D)}, cycles: 8, advance: 2, flags: None }),
+        0x13 => Ok(DI{ins: RL {target: R8(E)}, cycles: 8, advance: 2, flags: None }),
+        0x14 => Ok(DI{ins: RL {target: R8(H)}, cycles: 8, advance: 2, flags: None }),
+        0x15 => Ok(DI{ins: RL {target: R8(L)}, cycles: 8, advance: 2, flags: None }),
+        0x16 => Ok(DI{ins: RL {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }),
+
+        // sec 3.3.6.7 RRC n
+        0x0F => Ok(DI{ins: RRC {target: R8(A)}, cycles: 8, advance: 2, flags: None }),
+        0x08 => Ok(DI{ins: RRC {target: R8(B)}, cycles: 8, advance: 2, flags: None }),
+        0x09 => Ok(DI{ins: RRC {target: R8(C)}, cycles: 8, advance: 2, flags: None }),
+        0x0A => Ok(DI{ins: RRC {target: R8(D)}, cycles: 8, advance: 2, flags: None }),
+        0x0B => Ok(DI{ins: RRC {target: R8(E)}, cycles: 8, advance: 2, flags: None }),
+        0x0C => Ok(DI{ins: RRC {target: R8(H)}, cycles: 8, advance: 2, flags: None }),
+        0x0D => Ok(DI{ins: RRC {target: R8(L)}, cycles: 8, advance: 2, flags: None }),
+        0x0E => Ok(DI{ins: RRC {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }),
+
+        // sec 3.3.6.8 RR n
+        0x1F => Ok(DI{ins: RR {target: R8(A)}, cycles: 8, advance: 2, flags: None }),
+        0x18 => Ok(DI{ins: RR {target: R8(B)}, cycles: 8, advance: 2, flags: None }),
+        0x19 => Ok(DI{ins: RR {target: R8(C)}, cycles: 8, advance: 2, flags: None }),
+        0x1A => Ok(DI{ins: RR {target: R8(D)}, cycles: 8, advance: 2, flags: None }),
+        0x1B => Ok(DI{ins: RR {target: R8(E)}, cycles: 8, advance: 2, flags: None }),
+        0x1C => Ok(DI{ins: RR {target: R8(H)}, cycles: 8, advance: 2, flags: None }),
+        0x1D => Ok(DI{ins: RR {target: R8(L)}, cycles: 8, advance: 2, flags: None }),
+        0x1E => Ok(DI{ins: RR {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }),
+
+        // sec 3.3.6.9 SLA n
+        0x27 => Ok(DI{ins: SLA {target: R8(A)}, cycles: 8, advance: 2, flags: None }),
+        0x20 => Ok(DI{ins: SLA {target: R8(B)}, cycles: 8, advance: 2, flags: None }),
+        0x21 => Ok(DI{ins: SLA {target: R8(C)}, cycles: 8, advance: 2, flags: None }),
+        0x22 => Ok(DI{ins: SLA {target: R8(D)}, cycles: 8, advance: 2, flags: None }),
+        0x23 => Ok(DI{ins: SLA {target: R8(E)}, cycles: 8, advance: 2, flags: None }),
+        0x24 => Ok(DI{ins: SLA {target: R8(H)}, cycles: 8, advance: 2, flags: None }),
+        0x25 => Ok(DI{ins: SLA {target: R8(L)}, cycles: 8, advance: 2, flags: None }),
+        0x26 => Ok(DI{ins: SLA {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }),
+
+        // sec 3.3.6.10 SRA n
+        0x2F => Ok(DI{ins: SRA {target: R8(A)}, cycles: 8, advance: 2, flags: None }),
+        0x28 => Ok(DI{ins: SRA {target: R8(B)}, cycles: 8, advance: 2, flags: None }),
+        0x29 => Ok(DI{ins: SRA {target: R8(C)}, cycles: 8, advance: 2, flags: None }),
+        0x2A => Ok(DI{ins: SRA {target: R8(D)}, cycles: 8, advance: 2, flags: None }),
+        0x2B => Ok(DI{ins: SRA {target: R8(E)}, cycles: 8, advance: 2, flags: None }),
+        0x2C => Ok(DI{ins: SRA {target: R8(H)}, cycles: 8, advance: 2, flags: None }),
+        0x2D => Ok(DI{ins: SRA {target: R8(L)}, cycles: 8, advance: 2, flags: None }),
+        0x2E => Ok(DI{ins: SRA {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }),
+
+        // sec 3.3.6.11 SRL n
+        0x3F => Ok(DI{ins: SRL {target: R8(A)}, cycles: 8, advance: 2, flags: None }),
+        0x38 => Ok(DI{ins: SRL {target: R8(B)}, cycles: 8, advance: 2, flags: None }),
+        0x39 => Ok(DI{ins: SRL {target: R8(C)}, cycles: 8, advance: 2, flags: None }),
+        0x3A => Ok(DI{ins: SRL {target: R8(D)}, cycles: 8, advance: 2, flags: None }),
+        0x3B => Ok(DI{ins: SRL {target: R8(E)}, cycles: 8, advance: 2, flags: None }),
+        0x3C => Ok(DI{ins: SRL {target: R8(H)}, cycles: 8, advance: 2, flags: None }),
+        0x3D => Ok(DI{ins: SRL {target: R8(L)}, cycles: 8, advance: 2, flags: None }),
+        0x3E => Ok(DI{ins: SRL {target: Indirect8(HL)}, cycles: 16, advance: 2, flags: None }),
+
+        // sec 3.3.7.1 BIT b,r
+        x if x & 0b1100_0000 == 0x40 => 
+        {
+            let bit = (x & 0b0011_1000) >> 3;
+            let register = x & 0b0000_0111;
+            match register {
+                0 => Ok(DI{ins: BIT {src: R8(B), bit}, cycles: 8, advance: 2, flags: None }),
+                1 => Ok(DI{ins: BIT {src: R8(C), bit}, cycles: 8, advance: 2, flags: None }),
+                2 => Ok(DI{ins: BIT {src: R8(D), bit}, cycles: 8, advance: 2, flags: None }),
+                3 => Ok(DI{ins: BIT {src: R8(E), bit}, cycles: 8, advance: 2, flags: None }),
+                4 => Ok(DI{ins: BIT {src: R8(H), bit}, cycles: 8, advance: 2, flags: None }),
+                5 => Ok(DI{ins: BIT {src: R8(L), bit}, cycles: 8, advance: 2, flags: None }),
+                6 => Ok(DI{ins: BIT {src: Indirect8(HL), bit}, cycles: 16, advance: 2, flags: None }),
+                7 => Ok(DI{ins: BIT {src: R8(A), bit}, cycles: 8, advance: 2, flags: None }),
+                _ => unreachable!(),
+            }
+        },
+
+        // sec 3.3.7.2 SET b,r
+        x if x & 0b1100_0000 == 0xC0 => 
+        {
+            let bit = (x & 0b0011_1000) >> 3;
+            let register = x & 0b0000_0111;
+            match register {
+                0 => Ok(DI{ins: SET {dest: R8(B), bit}, cycles: 8, advance: 2, flags: None }),
+                1 => Ok(DI{ins: SET {dest: R8(C), bit}, cycles: 8, advance: 2, flags: None }),
+                2 => Ok(DI{ins: SET {dest: R8(D), bit}, cycles: 8, advance: 2, flags: None }),
+                3 => Ok(DI{ins: SET {dest: R8(E), bit}, cycles: 8, advance: 2, flags: None }),
+                4 => Ok(DI{ins: SET {dest: R8(H), bit}, cycles: 8, advance: 2, flags: None }),
+                5 => Ok(DI{ins: SET {dest: R8(L), bit}, cycles: 8, advance: 2, flags: None }),
+                6 => Ok(DI{ins: SET {dest: Indirect8(HL), bit}, cycles: 16, advance: 2, flags: None }),
+                7 => Ok(DI{ins: SET {dest: R8(A), bit}, cycles: 8, advance: 2, flags: None }),
+                _ => unreachable!(),
+            }
+        },
+
+        // sec 3.3.7.3 RES b,r
+        x if x & 0b1100_0000 == 0x80 => 
+        {
+            let bit = (x & 0b0011_1000) >> 3;
+            let register = x & 0b0000_0111;
+            match register {
+                0 => Ok(DI{ins: RES {dest: R8(B), bit}, cycles: 8, advance: 2, flags: None }),
+                1 => Ok(DI{ins: RES {dest: R8(C), bit}, cycles: 8, advance: 2, flags: None }),
+                2 => Ok(DI{ins: RES {dest: R8(D), bit}, cycles: 8, advance: 2, flags: None }),
+                3 => Ok(DI{ins: RES {dest: R8(E), bit}, cycles: 8, advance: 2, flags: None }),
+                4 => Ok(DI{ins: RES {dest: R8(H), bit}, cycles: 8, advance: 2, flags: None }),
+                5 => Ok(DI{ins: RES {dest: R8(L), bit}, cycles: 8, advance: 2, flags: None }),
+                6 => Ok(DI{ins: RES {dest: Indirect8(HL), bit}, cycles: 16, advance: 2, flags: None }),
+                7 => Ok(DI{ins: RES {dest: R8(A), bit}, cycles: 8, advance: 2, flags: None }),
+                _ => unreachable!(),
+            }
+        },
+
+        _ => Err(()),
     }
 }
 
