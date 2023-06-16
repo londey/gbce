@@ -35,6 +35,9 @@ pub enum Operand16 {
     /// 16-bit immediate value. nn
     Immediate16(u16),
 
+    /// Indirect addressing through 16-bit register. (BC), (DE), (HL), (SP)
+    Indirect16(Reg16),
+
     /// Indirect addressing of 16-bit byte through 16-bit immediate address. (nn)
     IndirectImmediate16(u16),
 
@@ -185,10 +188,10 @@ pub enum Instruction {
     BIT { bit: u8, src: Operand8 },
 
     /// Set bit in operand
-    SET { bit: u8, src: Operand8 },
+    SET { bit: u8, dest: Operand8 },
 
     /// Reset bit in operand
-    RES { bit: u8, src: Operand8 },
+    RES { bit: u8, dest: Operand8 },
 
     /// Jump to address
     JP { addr: Operand16, cond: Flags },
